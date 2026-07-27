@@ -305,23 +305,7 @@ const Gallery = () => {
             })}
           </div>
 
-          {/* <div ref={buttonRef} className="mt-16 text-center">
-            <button
-              onClick={() => console.log('Load more clicked')}
-              style={{ fontFamily: "'Space Grotesk', sans-serif", borderColor: PURPLE, color: PURPLE }}
-              className="inline-flex items-center justify-center px-8 py-3.5 border text-xs tracking-widest uppercase bg-transparent hover:bg-[#2D1C3E] transition-all duration-300 ease-out group rounded-none hover:text-white"
-            >
-              <span>View Full Gallery</span>
-              <svg
-                className="ml-2 w-4 h-4 transform transition-transform duration-300 group-hover:translate-x-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </button>
-          </div> */}
+         
         </div>
       </section>
 
