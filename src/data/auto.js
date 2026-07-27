@@ -1,44 +1,45 @@
+import h1 from '../assets/images/hero/hero1.webp'
+import h2 from '../assets/images/hero/g23.webp'
+import h3 from '../assets/images/hero/g22.webp'
+import h4 from '../assets/images/hero/g19.webp'
+import h5 from '../assets/images/hero/m3.webp'
+
 export const SLIDES = [
-  {
-    id: 'golden-hour-vows',
-    image:
-      'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1920&auto=format&fit=crop',
-    eyebrow: 'Real Wedding',
-    title: 'Vows Written in Golden Light',
-    subtitle: 'A sunset ceremony overlooking the vineyard hills',
-  },
-  {
-    id: 'first-dance',
-    image:
-      'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=1920&auto=format&fit=crop',
-    eyebrow: 'Reception Moments',
-    title: 'Every Dance Tells a Story',
-    subtitle: 'Intimate celebrations designed around your song',
-  },
-  {
-    id: 'garden-ceremony',
-    image:
-      'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1920&auto=format&fit=crop',
-    eyebrow: 'Venue Spotlight',
-    title: 'Say Yes Among the Blooms',
-    subtitle: 'Botanical garden weddings, curated end to end',
-  },
-  {
-    id: 'ring-exchange',
-    image:
-      'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=1920&auto=format&fit=crop',
-    eyebrow: 'The Details',
-    title: 'Two Rings, One Forever',
-    subtitle: 'Every detail planned so nothing is left to chance',
-  },
-  {
-    id: 'grand-ballroom',
-    image:
-      'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=1920&auto=format&fit=crop',
-    eyebrow: 'Signature Events',
-    title: 'Ballrooms Built for Forever',
-    subtitle: 'Grand celebrations with a personal, warm touch',
-  },
+ {
+  id: 'golden-hour-vows',
+  image: h1,
+  eyebrow: 'Wedding Stories',
+  title: 'Where Love Becomes a Lifetime Promise',
+  subtitle: 'From the first glance to the final dance, every moment is beautifully yours.',
+},
+ {
+  id: 'golden-hour-vows',
+  image: h2,
+  eyebrow: 'Forever Begins',
+  title: 'Celebrating the Journey of Two Hearts',
+  subtitle: 'Crafting timeless moments, heartfelt vows, and unforgettable celebrations.',
+},
+ {
+  id: 'garden-ceremony',
+  image: h3,
+  eyebrow: 'Dream Destinations',
+  title: 'Where Beautiful Moments Find Their Perfect Place',
+  subtitle: 'Explore breathtaking venues crafted for love, laughter, and lifelong memories.',
+},
+ {
+  id: 'golden-hour-vows',
+  image: h4,
+  eyebrow: 'Together Forever',
+  title: 'Every Love Story Deserves a Beautiful Beginning',
+  subtitle: 'Creating magical weddings filled with love, joy, and cherished memories.',
+},
+{
+  id: 'grand-ballroom',
+  image: h5,
+  eyebrow: 'Wedding Stage',
+  title: 'Where Every Spotlight Shines on Your Love',
+  subtitle: 'Elegant stage designs that create breathtaking memories for a lifetime.',
+},
 ]
 
 export const getSlideById = (id) => SLIDES.find((s) => s.id === id)

@@ -78,7 +78,7 @@ const Footer = () => {
           {/* Brand column */}
           <div ref={(el) => (colRefs.current[0] = el)} className="lg:col-span-1">
             <h3
-              style={{ fontFamily: "'Unbounded', sans-serif", color: IVORY }}
+              style={{ fontFamily: "'Cinzel Decorative', sans-serif", color: IVORY }}
               className="text-2xl font-light tracking-tight"
             >
               CrewAura<span style={{ color: GOLD }}>.</span>

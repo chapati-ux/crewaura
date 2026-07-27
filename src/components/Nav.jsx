@@ -170,10 +170,10 @@ const Nav = () => {
           aria-label={`${BRAND} home`}
           className="flex items-center gap-2"
         >
-          <FaRing size={20} style={{ color: GOLD }} />
+          {/* <FaRing size={20} style={{ color: GOLD }} /> */}
           <span
-            style={{ fontFamily: "'Unbounded', sans-serif" }}
-            className="flex text-lg tracking-tight sm:text-xl"
+            style={{ fontFamily: "'Cinzel Decorative', serif" }}
+            className="flex text-xl tracking-tight sm:text-2xl"
           >
             {BRAND.split('').map((letter, i) => (
               <span
