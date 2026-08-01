@@ -175,7 +175,7 @@ const Nav = () => {
             style={{ fontFamily: "'Cinzel Decorative', serif" }}
             className="flex text-xl tracking-tight sm:text-2xl"
           >
-            {BRAND.split('').map((letter, i) => (
+             {BRAND.split('').map((letter, i) => (
               <span
                 key={i}
                 ref={(el) => (logoLettersRef.current[i] = el)}

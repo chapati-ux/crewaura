@@ -61,7 +61,7 @@ const FloatingContactDock = () => {
     },
     {
       id: 'email',
-      href: 'mailto:hello@weddedstudio.com', // Matches your site's anchor email
+      href: 'mailto:crewaura11@gmail.com', // Matches your site's anchor email
       icon: <FiMail size={20} />,
       label: 'Send an Email',
       bgColor: '#2D1C3E', // Matches your site's deep luxury purple

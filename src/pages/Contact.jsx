@@ -291,7 +291,7 @@ const Contact = () => {
             </a>
 
             <a
-              href="mailto:hello@everafterevents.com"
+              href="mailto:crewaura11@gmail.com"
               className="flex items-center gap-4 group"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
@@ -302,12 +302,12 @@ const Contact = () => {
                 <FaEnvelope size={14} />
               </span>
               <span style={{ color: IVORY }} className="text-sm opacity-90 group-hover:opacity-100">
-                hello@everafterevents.com
+                crewaura11@gmail.com
               </span>
             </a>
 
             <a
-              href="https://maps.google.com/?q=Mumbai,Maharashtra,India"
+              href=""
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-4 group"
@@ -320,13 +320,13 @@ const Contact = () => {
                 <FaMapMarkerAlt size={14} />
               </span>
               <span style={{ color: IVORY }} className="text-sm opacity-90 group-hover:opacity-100">
-                Mumbai, Maharashtra, India
+               Navi Mumbai, Maharashtra, India
               </span>
             </a>
           </div>
 
           {/* Core Interactive Maps Embed Window */}
-          <div
+          {/* <div
             className="flex-1 min-h-[280px] overflow-hidden"
             style={{ border: `1px solid ${LINE}` }}
           >
@@ -340,7 +340,7 @@ const Contact = () => {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </main>

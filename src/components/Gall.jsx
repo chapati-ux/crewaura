@@ -2,22 +2,14 @@ import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Link } from 'react-router-dom'
+import imgaes from '../data/gallary'
+
 gsap.registerPlugin(ScrollTrigger)
 
 const PURPLE = '#2D1C3E'
 const GOLD = '#C8A96A'
 const IVORY = '#FBF7EF'
 const LINE = 'rgba(45,28,62,0.15)'
-
-//* Premium placeholder imagery representing distinct editorial textures
-const galleryItems = [
-  { id: 1, title: 'The Grand Hall', aspect: 'aspect-[4/5]', img: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=800&q=80', tag: 'Architecture', year: '2026' },
-  { id: 2, title: 'Ethereal Flora', aspect: 'aspect-[3/4]', img: 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=800&q=80', tag: 'Botanical', year: '2025' },
-  { id: 3, title: 'Golden Hour Silhouette', aspect: 'aspect-square', img: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80', tag: 'Candid', year: '2026' },
-  { id: 4, title: 'Velvet Details', aspect: 'aspect-[2/3]', img: 'https://images.unsplash.com/photo-1607190074257-dd4b7af0309f?auto=format&fit=crop&w=800&q=80', tag: 'Texture', year: '2026' },
-  { id: 5, title: 'The Banquet Setting', aspect: 'aspect-[4/5]', img: 'https://images.unsplash.com/photo-1546032996-6dfacbaccd36?auto=format&fit=crop&w=800&q=80', tag: 'Design', year: '2025' },
-  { id: 6, title: 'Starlit Aisle', aspect: 'aspect-[3/4]', img: 'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=800&q=80', tag: 'Lighting', year: '2026' },
-]
 
 const Gall = () => {
   const containerRef = useRef(null)
@@ -111,7 +103,7 @@ const Gall = () => {
 
         {/* Dynamic Asymmetric Masonry Layout Grid */}
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8 [column-fill:_balance]">
-          {galleryItems.map((item, i) => (
+          {imgaes.slice(0, 6).map((item, i) => (
             <div
               key={item.id}
               ref={(el) => (itemRefs.current[i] = el)}
