@@ -15,16 +15,16 @@ const socials = [
     href: "https://www.instagram.com/crewaura.events/?hl=en",
     icon: FaInstagram,
   },
-  {
-    name: "Pinterest",
-    href: "https://pinterest.com",
-    icon: FaPinterestP,
-  },
-  {
-    name: "Facebook",
-    href: "https://facebook.com",
-    icon: FaFacebookF,
-  },
+  // {
+  //   name: "Pinterest",
+  //   href: "https://pinterest.com",
+  //   icon: FaPinterestP,
+  // },
+  // {
+  //   name: "Facebook",
+  //   href: "https://facebook.com",
+  //   icon: FaFacebookF,
+  // },
 ];
 
 const quickLinks = [
@@ -197,11 +197,11 @@ const Footer = () => {
             <ul className="space-y-3" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
               <li>
                 <a
-                  href="mailto:crewaura11@gmail.com.com"
+                  href="mailto:Hello@crewaura.com"
                   style={{ color: IVORY }}
                   className="text-sm opacity-70 hover:opacity-100 transition-opacity duration-300"
                 >
-                 crewaura11@gmail.com
+                 Hello@crewaura.com
                 </a>
               </li>
               <li>

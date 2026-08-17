@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import services from '../data/services'
@@ -14,6 +15,9 @@ const IVORY = '#FBF7EF'
 const TEXT = '#4A3F55'
 const LINE = 'rgba(45,28,62,0.15)'
 
+// How many services to preview on this section
+const PREVIEW_COUNT = 5
+
 const Service = () => {
   const sectionRef = useRef(null)
   const eyebrowRef = useRef(null)
@@ -22,9 +26,13 @@ const Service = () => {
   const cardRefs = useRef([])
   const blobRefs = useRef([])
   const tiltRefs = useRef([]) // GSAP quickTo setters per card
+  const ctaRef = useRef(null)
 
   const heading = 'Our Services'
   let letterIndex = 0
+
+  // Only render a subset of services on this page
+  const visibleServices = services.slice(0, PREVIEW_COUNT)
 
   useEffect(() => {
     if (document.getElementById('crewaura-cormorant-font')) return
@@ -58,6 +66,7 @@ const Service = () => {
         scale: 0.95, 
         rotate: (i) => i % 2 === 0 ? 2 : -2 
       })
+      gsap.set(ctaRef.current, { opacity: 0, y: 20 })
 
       const tl = gsap.timeline({
         defaults: { ease: 'power4.out' },
@@ -72,6 +81,7 @@ const Service = () => {
           { y: 0, opacity: 1, scale: 1, rotate: 0, duration: 0.85, stagger: 0.12, ease: 'power3.out' },
           '-=0.2'
         )
+        .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.6 }, '-=0.2')
     }, sectionRef)
 
     return () => ctx.revert()
@@ -189,7 +199,7 @@ const Service = () => {
           className="mt-20 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 auto-rows-[340px]" 
           style={{ perspective: 1200 }}
         >
-          {services.map((service, i) => {
+          {visibleServices.map((service, i) => {
             // Generates an elegant magazine pattern layout layout dynamically
             const isWide = i === 0 || i === 5; 
             const isTall = i === 2 || i === 7;
@@ -260,6 +270,33 @@ const Service = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* View All Services CTA */}
+        <div ref={ctaRef} className="mt-16 flex justify-center">
+          <Link
+            to="/services"
+            className="group relative inline-flex items-center gap-3 overflow-hidden border px-8 py-3.5 text-sm tracking-wide transition-colors duration-500"
+            style={{
+              fontFamily: "'Unbounded', sans-serif",
+              borderColor: GOLD,
+              color: PURPLE,
+            }}
+          >
+            <span
+              className="absolute inset-0 -z-10 origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
+              style={{ backgroundColor: PURPLE }}
+            />
+            <span className="transition-colors duration-500 group-hover:text-white">
+              View All Services
+            </span>
+            <span
+              className="transition-transform duration-500 group-hover:translate-x-1 group-hover:text-white"
+              style={{ color: GOLD }}
+            >
+              →
+            </span>
+          </Link>
         </div>
       </div>
     </section>
