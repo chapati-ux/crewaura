@@ -29,6 +29,7 @@ const Nav = () => {
 
   const navRef = useRef(null)
   const logoLettersRef = useRef([])
+  const logoUnderlineRef = useRef(null)
   const linksWrapRef = useRef(null)
   const linksRef = useRef([])
   const indicatorRef = useRef(null)
@@ -90,6 +91,46 @@ const Nav = () => {
   }
   const hideIndicator = () => {
     gsap.to(indicatorRef.current, { opacity: 0, duration: 0.3 })
+  }
+
+  // --- Logo hover: letters ripple upward in a wave and flash gold, underline sweeps in ---
+  const handleLogoEnter = () => {
+    gsap.killTweensOf(logoLettersRef.current)
+    gsap.to(logoLettersRef.current, {
+      y: -6,
+      color: GOLD,
+      duration: 0.32,
+      ease: 'power2.out',
+      stagger: { each: 0.04, yoyo: true, repeat: 1 },
+    })
+    if (logoUnderlineRef.current) {
+      gsap.to(logoUnderlineRef.current, {
+        scaleX: 1,
+        duration: 0.4,
+        ease: 'power3.out',
+        transformOrigin: 'left',
+      })
+    }
+  }
+  const handleLogoLeave = () => {
+    gsap.killTweensOf(logoLettersRef.current)
+    logoLettersRef.current.forEach((el, i) => {
+      if (!el) return
+      gsap.to(el, {
+        y: 0,
+        color: i < 4 ? CREAM : GOLD,
+        duration: 0.35,
+        ease: 'power2.out',
+      })
+    })
+    if (logoUnderlineRef.current) {
+      gsap.to(logoUnderlineRef.current, {
+        scaleX: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+        transformOrigin: 'right',
+      })
+    }
   }
 
   // --- Mobile menu: full-screen clip-path reveal instead of a simple accordion ---
@@ -163,12 +204,14 @@ const Nav = () => {
       }}
     >
       <nav className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-10">
-        {/* Brand — letters animate in individually */}
+        {/* Brand — letters animate in individually, ripple + flash gold on hover */}
         <Link
           to="/"
           onClick={() => setIsOpen(false)}
+          onMouseEnter={handleLogoEnter}
+          onMouseLeave={handleLogoLeave}
           aria-label={`${BRAND} home`}
-          className="flex items-center gap-2"
+          className="relative flex items-center gap-2"
         >
           {/* <FaRing size={20} style={{ color: GOLD }} /> */}
           <span
@@ -185,6 +228,11 @@ const Nav = () => {
               </span>
             ))}
           </span>
+          <span
+            ref={logoUnderlineRef}
+            className="pointer-events-none absolute -bottom-1.5 left-0 h-[1.5px] w-full scale-x-0"
+            style={{ backgroundColor: GOLD }}
+          />
         </Link>
 
         {/* Desktop Links with a sliding hover-pill indicator */}
@@ -234,7 +282,7 @@ const Nav = () => {
           className="hidden overflow-hidden rounded-full px-6 py-2.5 text-sm font-semibold shadow-sm lg:inline-flex"
         >
           <span ref={ctaTextRef} style={{ color: PURPLE_SOLID }}>
-            Book Consultation
+            Book Your Event
           </span>
         </Link>
 
@@ -296,7 +344,7 @@ const Nav = () => {
           style={{ backgroundColor: GOLD, fontFamily: "'Space Grotesk', sans-serif", color: PURPLE_SOLID }}
           className="mt-8 rounded-full px-8 py-3 text-sm font-semibold"
         >
-          Book Consultation
+          Book Your Event
         </Link>
       </div>
     </header>

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import axios from 'axios'
 import { FaRing, FaPhone, FaEnvelope, FaMapMarkerAlt, FaSpinner, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -11,11 +12,42 @@ const IVORY = '#FBF7EF'
 const LINE = 'rgba(45,28,62,0.12)'
 
 // SheetDB API endpoint mapping to your spreadsheet instance
-const SHEETDB_URL = 'https://sheetdb.io/api/v1/7r9vbywz15xqb'
+const SHEETDB_URL = 'https://sheetdb.io/api/v1/ojuaqpmrsdyaq'
 
 // Google Maps iframe target embedding link
 const MAPS_EMBED_SRC =
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3768.6!2d72.8777!3d19.0760!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDA0JzMzLjYiTiA3MsKwNTInMzkuNyJF!5e0!3m2!1sen!2sin!4v1700000000000'
+
+const OTHER_VALUE = 'Other'
+
+const EVENT_TYPES = [
+  'Wedding',
+  'Engagement',
+  'Sangeet / Mehendi',
+  'Reception',
+  'Corporate Events',
+  'Other Events',
+  OTHER_VALUE,
+]
+
+const BUDGET_RANGES = [
+  'Under ₹5 Lakh',
+  '₹5 – 10 Lakh',
+  '₹10 – 20 Lakh',
+  '₹20 – 40 Lakh',
+  '₹40 Lakh+',
+  'Not sure yet',
+  OTHER_VALUE,
+]
+
+const GUEST_COUNTS = [
+  'Under 50',
+  '50 – 100',
+  '100 – 250',
+  '250 – 500',
+  '500+',
+  OTHER_VALUE,
+]
 
 const Contact = () => {
   const pageRef = useRef(null)
@@ -29,6 +61,14 @@ const Contact = () => {
     name: '',
     email: '',
     phone: '',
+    eventType: '',
+    eventTypeOther: '',
+    preferredDate: '',
+    guestCount: '',
+    guestCountOther: '',
+    budgetRange: '',
+    budgetRangeOther: '',
+    venuePreference: '',
     message: '',
   })
   const [status, setStatus] = useState('idle') // idle | sending | success | error
@@ -68,39 +108,65 @@ const Contact = () => {
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
+  const otherFieldRef = (el) => {
+    if (el) {
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: -8, height: 0 },
+        { opacity: 1, y: 0, height: 'auto', duration: 0.35, ease: 'power2.out' }
+      )
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('sending')
 
-    // Press-down micro-bounce interaction timeline execution sequence
     gsap.timeline()
       .to(buttonRef.current, { scale: 0.94, duration: 0.12, ease: 'power2.out' })
       .to(buttonRef.current, { scale: 1, duration: 0.3, ease: 'elastic.out(1, 0.5)' })
 
-    // Generate current local date and time string
     const currentTimestamp = new Date().toLocaleString()
 
+    const payload = {
+      ...form,
+      eventType: form.eventType === OTHER_VALUE ? form.eventTypeOther : form.eventType,
+      guestCount: form.guestCount === OTHER_VALUE ? form.guestCountOther : form.guestCount,
+      budgetRange: form.budgetRange === OTHER_VALUE ? form.budgetRangeOther : form.budgetRange,
+    }
+    delete payload.eventTypeOther
+    delete payload.guestCountOther
+    delete payload.budgetRangeOther
+
     try {
-      const res = await fetch(SHEETDB_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          data: {
-            timestamp: currentTimestamp, // Kept in the first place inside the data object
-            ...form
-          } 
-        }),
+      await axios.post(SHEETDB_URL, {
+        data: [
+          {
+            timestamp: currentTimestamp,
+            ...payload,
+          },
+        ],
       })
 
-      if (!res.ok) throw new Error(`SheetDB responded with ${res.status}`)
-
       setStatus('success')
-      setForm({ name: '', email: '', phone: '', message: '' })
+      setForm({
+        name: '',
+        email: '',
+        phone: '',
+        eventType: '',
+        eventTypeOther: '',
+        preferredDate: '',
+        guestCount: '',
+        guestCountOther: '',
+        budgetRange: '',
+        budgetRangeOther: '',
+        venuePreference: '',
+        message: '',
+      })
     } catch (err) {
       console.error('Contact form submission failed:', err)
       setStatus('error')
 
-      // Reject alert shake sequence wrapper container triggers
       gsap.fromTo(
         formRef.current,
         { x: 0 },
@@ -119,9 +185,13 @@ const Contact = () => {
     borderColor: LINE,
   }
 
+  const labelClass = 'block text-xs uppercase tracking-widest mb-2'
+  const labelStyle = { color: PURPLE, opacity: 0.6, fontFamily: "'Poppins', sans-serif" }
+  const fieldClass =
+    'w-full border px-4 py-3 text-sm focus:outline-none focus:ring-1 transition-colors bg-white'
+
   return (
     <main ref={pageRef} className="min-h-screen pt-28 pb-24" style={{ backgroundColor: IVORY }}>
-      {/* ============ Hero Header Block ============ */}
       <div ref={heroRef} className="mx-auto max-w-3xl px-6 text-center lg:px-8">
         <FaRing className="mx-auto mb-6" size={32} style={{ color: GOLD }} />
         <span
@@ -145,9 +215,7 @@ const Contact = () => {
         </p>
       </div>
 
-      {/*============ Form + Info Two Column Section Grid ============ */}
       <div className="mx-auto max-w-6xl px-6 lg:px-8 mt-16 grid grid-cols-1 lg:grid-cols-5 gap-12">
-        {/* ---- Left Grid Column: Form Intake Module ---- */}
         <div
           ref={formColRef}
           className="lg:col-span-3 p-8 sm:p-10"
@@ -163,11 +231,7 @@ const Contact = () => {
           <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-xs uppercase tracking-widest mb-2"
-                  style={{ color: PURPLE, opacity: 0.6, fontFamily: "'Poppins', sans-serif" }}
-                >
+                <label htmlFor="name" className={labelClass} style={labelStyle}>
                   Full Name
                 </label>
                 <input
@@ -178,38 +242,29 @@ const Contact = () => {
                   value={form.name}
                   onChange={handleChange}
                   placeholder="Enter Your Name"
-                  className="w-full border px-4 py-3 text-sm focus:outline-none focus:ring-1 transition-colors"
+                  className={fieldClass}
                   style={inputStyle}
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-xs uppercase tracking-widest mb-2"
-                  style={{ color: PURPLE, opacity: 0.6, fontFamily: "'Poppins', sans-serif" }}
-                >
+                <label htmlFor="email" className={labelClass} style={labelStyle}>
                   Email
                 </label>
                 <input
                   id="email"
                   name="email"
                   type="email"
-                  required
                   value={form.email}
                   onChange={handleChange}
-                  placeholder="you@email.com"
-                  className="w-full border px-4 py-3 text-sm focus:outline-none focus:ring-1 transition-colors"
+                  placeholder="you@email.com (Optional)"
+                  className={fieldClass}
                   style={inputStyle}
                 />
               </div>
 
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="phone"
-                  className="block text-xs uppercase tracking-widest mb-2"
-                  style={{ color: PURPLE, opacity: 0.6, fontFamily: "'Poppins', sans-serif" }}
-                >
+              <div>
+                <label htmlFor="phone" className={labelClass} style={labelStyle}>
                   Phone
                 </label>
                 <input
@@ -219,19 +274,160 @@ const Contact = () => {
                   value={form.phone}
                   onChange={handleChange}
                   placeholder="+91 12345 67890"
-                  className="w-full border px-4 py-3 text-sm focus:outline-none focus:ring-1 transition-colors"
+                  className={fieldClass}
+                  style={inputStyle}
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="eventType" className={labelClass} style={labelStyle}>
+                  Event Type
+                </label>
+                <select
+                  id="eventType"
+                  name="eventType"
+                  required
+                  value={form.eventType}
+                  onChange={handleChange}
+                  className={fieldClass}
+                  style={inputStyle}
+                >
+                  <option value="" disabled>
+                    Select an event
+                  </option>
+                  {EVENT_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type === OTHER_VALUE ? 'Other (please specify)' : type}
+                    </option>
+                  ))}
+                </select>
+                {form.eventType === OTHER_VALUE && (
+                  <input
+                    ref={otherFieldRef}
+                    key="eventTypeOther"
+                    id="eventTypeOther"
+                    name="eventTypeOther"
+                    type="text"
+                    value={form.eventTypeOther}
+                    onChange={handleChange}
+                    placeholder="Tell us what kind of event"
+                    className={`${fieldClass} mt-3`}
+                    style={inputStyle}
+                    required
+                  />
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="preferredDate" className={labelClass} style={labelStyle}>
+                  Preferred Date
+                </label>
+                <input
+                  id="preferredDate"
+                  name="preferredDate"
+                  type="date"
+                  value={form.preferredDate}
+                  onChange={handleChange}
+                  className={fieldClass}
+                  style={inputStyle}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="guestCount" className={labelClass} style={labelStyle}>
+                  Expected Guests
+                </label>
+                <select
+                  id="guestCount"
+                  name="guestCount"
+                  value={form.guestCount}
+                  onChange={handleChange}
+                  className={fieldClass}
+                  style={inputStyle}
+                >
+                  <option value="" disabled>
+                    Select guest count
+                  </option>
+                  {GUEST_COUNTS.map((count) => (
+                    <option key={count} value={count}>
+                      {count === OTHER_VALUE ? 'Other (please specify)' : count}
+                    </option>
+                  ))}
+                </select>
+                {form.guestCount === OTHER_VALUE && (
+                  <input
+                    ref={otherFieldRef}
+                    key="guestCountOther"
+                    id="guestCountOther"
+                    name="guestCountOther"
+                    type="text"
+                    value={form.guestCountOther}
+                    onChange={handleChange}
+                    placeholder="Roughly how many guests"
+                    className={`${fieldClass} mt-3`}
+                    style={inputStyle}
+                  />
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="budgetRange" className={labelClass} style={labelStyle}>
+                  Budget Range
+                </label>
+                <select
+                  id="budgetRange"
+                  name="budgetRange"
+                  value={form.budgetRange}
+                  onChange={handleChange}
+                  className={fieldClass}
+                  style={inputStyle}
+                >
+                  <option value="" disabled>
+                    Select a budget range
+                  </option>
+                  {BUDGET_RANGES.map((range) => (
+                    <option key={range} value={range}>
+                      {range === OTHER_VALUE ? 'Other (please specify)' : range}
+                    </option>
+                  ))}
+                </select>
+                {form.budgetRange === OTHER_VALUE && (
+                  <input
+                    ref={otherFieldRef}
+                    key="budgetRangeOther"
+                    id="budgetRangeOther"
+                    name="budgetRangeOther"
+                    type="text"
+                    value={form.budgetRangeOther}
+                    onChange={handleChange}
+                    placeholder="Your approximate budget"
+                    className={`${fieldClass} mt-3`}
+                    style={inputStyle}
+                  />
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="venuePreference" className={labelClass} style={labelStyle}>
+                  Venue Preference
+                </label>
+                <input
+                  id="venuePreference"
+                  name="venuePreference"
+                  type="text"
+                  value={form.venuePreference}
+                  onChange={handleChange}
+                  placeholder="Banquet hall, resort, outdoor..."
+                  className={fieldClass}
                   style={inputStyle}
                 />
               </div>
             </div>
 
             <div>
-              <label
-                htmlFor="message"
-                className="block text-xs uppercase tracking-widest mb-2"
-                style={{ color: PURPLE, opacity: 0.6, fontFamily: "'Poppins', sans-serif" }}
-              >
-                Tell Us About Your Day
+              <label htmlFor="message" className={labelClass} style={labelStyle}>
+                Additional Details
               </label>
               <textarea
                 id="message"
@@ -240,7 +436,7 @@ const Contact = () => {
                 value={form.message}
                 onChange={handleChange}
                 placeholder="Venue, guest count, vibe you're going for..."
-                className="w-full border px-4 py-3 text-sm resize-none focus:outline-none focus:ring-1 transition-colors"
+                className="w-full border px-4 py-3 text-sm resize-none focus:outline-none focus:ring-1 transition-colors bg-white"
                 style={inputStyle}
               />
             </div>
@@ -268,7 +464,6 @@ const Contact = () => {
           </form>
         </div>
 
-        {/* ---- Right Grid Column: Contact Information Cards & Map Block ---- */}
         <div ref={infoColRef} className="lg:col-span-2 flex flex-col gap-8">
           <div
             className="p-8 sm:p-10 flex flex-col gap-6"
@@ -291,7 +486,7 @@ const Contact = () => {
             </a>
 
             <a
-              href="mailto:crewaura11@gmail.com"
+              href="mailto:Hello@crewaura.com"
               className="flex items-center gap-4 group"
               style={{ fontFamily: "'Poppins', sans-serif" }}
             >
@@ -302,31 +497,28 @@ const Contact = () => {
                 <FaEnvelope size={14} />
               </span>
               <span style={{ color: IVORY }} className="text-sm opacity-90 group-hover:opacity-100">
-                crewaura11@gmail.com
+                Hello@crewaura.com
               </span>
             </a>
 
-            <a
-              href=""
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 group"
-              style={{ fontFamily: "'Poppins', sans-serif" }}
-            >
+            <div className="flex items-center gap-4">
               <span
                 className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0"
                 style={{ border: `1px solid ${GOLD}66`, color: GOLD }}
               >
                 <FaMapMarkerAlt size={14} />
               </span>
-              <span style={{ color: IVORY }} className="text-sm opacity-90 group-hover:opacity-100">
-               Navi Mumbai, Maharashtra, India
+              <span
+                style={{ color: IVORY, fontFamily: "'Poppins', sans-serif" }}
+                className="text-sm opacity-90"
+              >
+                Navi Mumbai, Maharashtra, India
               </span>
-            </a>
+            </div>
           </div>
 
-          {/* Core Interactive Maps Embed Window */}
-          {/* <div
+          {/*
+          <div
             className="flex-1 min-h-[280px] overflow-hidden"
             style={{ border: `1px solid ${LINE}` }}
           >
@@ -340,7 +532,8 @@ const Contact = () => {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
-          </div> */}
+          </div>
+          */}
         </div>
       </div>
     </main>
