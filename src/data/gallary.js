@@ -36,6 +36,23 @@ import g23 from '../assets/images/gallery/g9.webp'
 import g24 from '../assets/images/gallery/g15.webp'
 import g25 from '../assets/images/gallery/g20.webp'
 import g26 from '../assets/images/gallery/g21.webp'
+import g27 from '../assets/images/gallery/g1.jpeg'
+import g28 from '../assets/images/gallery/g2.jpeg'
+import g29 from '../assets/images/gallery/g3.jpeg'
+import g30 from '../assets/images/gallery/g4.jpeg'
+import g31 from '../assets/images/gallery/g5.jpeg'
+import g32 from '../assets/images/gallery/g22.jpeg'
+import g33 from '../assets/images/gallery/g23.jpeg'
+import g34 from '../assets/images/gallery/g24.jpeg'
+import g35 from '../assets/images/gallery/g25.jpeg'
+import g36 from '../assets/images/gallery/g26.jpeg'
+import g37 from '../assets/images/gallery/g27.jpeg'
+import g38 from '../assets/images/gallery/g28.jpeg'
+import g39 from '../assets/images/gallery/g29.jpeg'
+import g40 from '../assets/images/gallery/g30.jpeg'
+import g41 from '../assets/images/gallery/g31.jpeg'
+import g42 from '../assets/images/gallery/g32.jpeg'
+import g43 from '../assets/images/gallery/g33.jpeg'
 
 const galleryItems = [
   {
@@ -269,6 +286,159 @@ const galleryItems = [
   title: "Forever Together",
   aspect: "aspect-[3/4]",
   img: g26,
+  tag: "Love",
+  year: "2026",
+},
+{
+  id: 27,
+  media: "image",
+  title: "Candid Laughter",
+  aspect: "aspect-[3/4]",
+  img: g27,
+  tag: "Candid",
+  year: "2026",
+},
+{
+  id: 28,
+  media: "image",
+  title: "The Vow Exchange",
+  aspect: "aspect-[4/5]",
+  img: g28,
+  tag: "Ceremony",
+  year: "2026",
+},
+{
+  id: 29,
+  media: "image",
+  title: "Dance Floor Energy",
+  aspect: "aspect-square",
+  img: g29,
+  tag: "Reception",
+  year: "2026",
+},
+{
+  id: 30,
+  media: "image",
+  title: "Rings & Details",
+  aspect: "aspect-[2/3]",
+  img: g30,
+  tag: "Texture",
+  year: "2026",
+},
+{
+  id: 31,
+  media: "image",
+  title: "Sunset Portraits",
+  aspect: "aspect-[3/4]",
+  img: g31,
+  tag: "Portrait",
+  year: "2026",
+},
+{
+  id: 32,
+  media: "image",
+  title: "Toast to Forever",
+  aspect: "aspect-[4/5]",
+  img: g32,
+  tag: "Celebration",
+  year: "2026",
+},
+{
+  id: 33,
+  media: "image",
+  title: "The Getting Ready",
+  aspect: "aspect-square",
+  img: g33,
+  tag: "Candid",
+  year: "2026",
+},
+{
+  id: 34,
+  media: "image",
+  title: "Aisle Walk",
+  aspect: "aspect-[3/4]",
+  img: g34,
+  tag: "Ceremony",
+  year: "2026",
+},
+{
+  id: 35,
+  media: "image",
+  title: "Family Gathered",
+  aspect: "aspect-[4/5]",
+  img: g35,
+  tag: "Moments",
+  year: "2026",
+},
+{
+  id: 36,
+  media: "image",
+  title: "The Cake Cutting",
+  aspect: "aspect-square",
+  img: g36,
+  tag: "Reception",
+  year: "2026",
+},
+{
+  id: 37,
+  media: "image",
+  title: "Evening Glow",
+  aspect: "aspect-[3/4]",
+  img: g37,
+  tag: "Lighting",
+  year: "2026",
+},
+{
+  id: 38,
+  media: "image",
+  title: "Bouquet Toss",
+  aspect: "aspect-[4/5]",
+  img: g38,
+  tag: "Reception",
+  year: "2026",
+},
+{
+  id: 39,
+  media: "image",
+  title: "The Send-Off",
+  aspect: "aspect-[3/4]",
+  img: g39,
+  tag: "Celebration",
+  year: "2026",
+},
+{
+  id: 40,
+  media: "image",
+  title: "Quiet Reflections",
+  aspect: "aspect-square",
+  img: g40,
+  tag: "Candid",
+  year: "2026",
+},
+{
+  id: 41,
+  media: "image",
+  title: "The Guest Table",
+  aspect: "aspect-[2/3]",
+  img: g41,
+  tag: "Design",
+  year: "2026",
+},
+{
+  id: 42,
+  media: "image",
+  title: "Hand in Hand",
+  aspect: "aspect-[4/5]",
+  img: g42,
+  tag: "Couple",
+  year: "2026",
+},
+{
+  id: 43,
+  media: "image",
+  title: "The Final Dance",
+  aspect: "aspect-[3/4]",
+  img: g43,
   tag: "Love",
   year: "2026",
 },
