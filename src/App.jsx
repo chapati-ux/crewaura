@@ -15,6 +15,7 @@ import Services from "./pages/Services";
 import Footer from "./components/Footer";
 import FloatingContactDock from "./components/FloatingContactDock";
 import FloatingContactForm from "./components/FloatingContactForm";
+import Admin from "./admin/Admin";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,10 +34,13 @@ function ScrollRefreshOnRouteChange() {
 }
 
 function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   return (
     <>
-      <Nav />
-      <FloatingContactForm />
+      {!isAdminRoute && <Nav />}
+      {!isAdminRoute && <FloatingContactForm />}
       <ScrollRefreshOnRouteChange />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -44,9 +48,10 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/admin/*" element={<Admin />} />
       </Routes>
-      <FloatingContactDock />
-      <Footer />
+      {!isAdminRoute && <FloatingContactDock />}
+      {!isAdminRoute && <Footer />}
     </>
   );
 }
