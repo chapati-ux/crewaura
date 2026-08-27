@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
-import { FaRing, FaTimes, FaCheckCircle, FaExclamationCircle, FaSpinner } from 'react-icons/fa'
+import { FaRing, FaTimes, FaCheckCircle, FaExclamationCircle, FaSpinner, FaChevronDown } from 'react-icons/fa'
 import gsap from 'gsap'
 
 const PURPLE = '#2D1C3E'
@@ -32,10 +32,11 @@ const FloatingContactForm = () => {
     name: '',
     email: '',
     phone: '',
-    eventType: '',
+    eventTypes: [], // now an array to support multiple selections
     message: '',
   })
   const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [eventDropdownOpen, setEventDropdownOpen] = useState(false)
 
   const cardRef = useRef(null)
   const formRef = useRef(null)
@@ -44,6 +45,7 @@ const FloatingContactForm = () => {
   const glowTweenRef = useRef(null)
   const successIconRef = useRef(null)
   const successTextRef = useRef(null)
+  const eventDropdownRef = useRef(null)
 
   // Show the popup after a delay, unless the user already dismissed it this session
   useEffect(() => {
@@ -121,6 +123,18 @@ const FloatingContactForm = () => {
     }
   }, [status])
 
+  // Close the event-type dropdown when clicking outside of it
+  useEffect(() => {
+    if (!eventDropdownOpen) return
+    const handleClickOutside = (e) => {
+      if (eventDropdownRef.current && !eventDropdownRef.current.contains(e.target)) {
+        setEventDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [eventDropdownOpen])
+
   const handleClose = () => {
     if (cardRef.current) {
       gsap.to(cardRef.current, {
@@ -139,6 +153,16 @@ const FloatingContactForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const toggleEventType = (type) => {
+    setForm((prev) => {
+      const alreadySelected = prev.eventTypes.includes(type)
+      const eventTypes = alreadySelected
+        ? prev.eventTypes.filter((t) => t !== type)
+        : [...prev.eventTypes, type]
+      return { ...prev, eventTypes }
+    })
   }
 
   const handleSubmit = async (e) => {
@@ -166,12 +190,14 @@ const FloatingContactForm = () => {
             timestamp: currentTimestamp,
             source: 'Floating Popup',
             ...form,
+            // SheetDB stores flat cell values, so join the array into a readable string
+            eventType: form.eventTypes.join(', '),
           },
         ],
       })
 
       setStatus('success')
-      setForm({ name: '', email: '', phone: '', eventType: '', message: '' })
+      setForm({ name: '', email: '', phone: '', eventTypes: [], message: '' })
       sessionStorage.setItem(DISMISS_KEY, 'true')
     } catch (err) {
       console.error('Floating contact form submission failed:', err)
@@ -203,12 +229,6 @@ const FloatingContactForm = () => {
     fontFamily: "'Poppins', sans-serif",
     color: PURPLE,
     borderColor: LINE,
-  }
-
-  const labelStyle = {
-    color: PURPLE,
-    opacity: 0.6,
-    fontFamily: "'Poppins', sans-serif",
   }
 
   const fieldClass =
@@ -311,23 +331,105 @@ const FloatingContactForm = () => {
                 style={inputStyle}
               />
 
-              <select
-                name="eventType"
-                required
-                value={form.eventType}
-                onChange={handleChange}
-                className={fieldClass}
-                style={inputStyle}
-              >
-                <option value="" disabled>
-                  Select event type
-                </option>
-                {EVENT_TYPES.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
+              {/* Multi-select event type dropdown — click to toggle each option */}
+              <div className="relative" ref={eventDropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setEventDropdownOpen((open) => !open)}
+                  className={`${fieldClass} flex items-center justify-between text-left`}
+                  style={inputStyle}
+                  aria-haspopup="listbox"
+                  aria-expanded={eventDropdownOpen}
+                >
+                  <span
+                    className={form.eventTypes.length === 0 ? 'opacity-50' : ''}
+                    style={{ color: PURPLE }}
+                  >
+                    {form.eventTypes.length === 0
+                      ? 'Select event type(s)'
+                      : form.eventTypes.join(', ')}
+                  </span>
+                  <FaChevronDown
+                    size={11}
+                    style={{
+                      color: PURPLE,
+                      opacity: 0.5,
+                      transform: eventDropdownOpen ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.2s ease',
+                      flexShrink: 0,
+                      marginLeft: 8,
+                    }}
+                  />
+                </button>
+
+                {/* Hidden required input so native form validation still enforces a selection */}
+                <input
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  required
+                  value={form.eventTypes.length > 0 ? 'ok' : ''}
+                  onChange={() => {}}
+                  className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
+                />
+
+                {eventDropdownOpen && (
+                  <div
+                    role="listbox"
+                    aria-multiselectable="true"
+                    className="absolute z-10 mt-1 w-full bg-white border shadow-lg max-h-56 overflow-y-auto"
+                    style={{ borderColor: LINE }}
+                  >
+                    {EVENT_TYPES.map((type) => {
+                      const checked = form.eventTypes.includes(type)
+                      return (
+                        <label
+                          key={type}
+                          role="option"
+                          aria-selected={checked}
+                          className="flex items-center gap-2.5 px-3 py-2 text-sm cursor-pointer hover:bg-black/5 transition-colors"
+                          style={{ color: PURPLE, fontFamily: "'Poppins', sans-serif" }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => toggleEventType(type)}
+                            className="w-3.5 h-3.5 accent-current"
+                            style={{ accentColor: GOLD }}
+                          />
+                          {type}
+                        </label>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Selected event types shown as removable chips */}
+              {form.eventTypes.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {form.eventTypes.map((type) => (
+                    <span
+                      key={type}
+                      className="inline-flex items-center gap-1 rounded-full pl-2.5 pr-1.5 py-1 text-[11px]"
+                      style={{
+                        backgroundColor: 'rgba(200,169,106,0.15)',
+                        color: PURPLE,
+                        fontFamily: "'Poppins', sans-serif",
+                      }}
+                    >
+                      {type}
+                      <button
+                        type="button"
+                        onClick={() => toggleEventType(type)}
+                        aria-label={`Remove ${type}`}
+                        className="w-3.5 h-3.5 flex items-center justify-center rounded-full hover:bg-black/10"
+                      >
+                        <FaTimes size={8} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
 
               <textarea
                 name="message"

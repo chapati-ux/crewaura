@@ -94,3 +94,19 @@ wedding-planner/
 ├── tailwind.config.js
 ├── vite.config.js
 └── README.md"# crewaura" 
+
+
+
+
+g1.webp
+g3.webp
+g5.webp
+g6.webp
+g7.webp
+g8.webp
+g9.webp
+g10.webp
+g11.webp
+g12.webp
+g15.webp
+g20.webp

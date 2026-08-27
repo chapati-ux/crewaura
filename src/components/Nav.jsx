@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { FaRing } from 'react-icons/fa'
 import { HiOutlineXMark } from 'react-icons/hi2'
 import gsap from 'gsap'
+import logo from '../assets/logo/imglogo.png'
 
 const NAV_LINKS = [
   { label: 'Home', path: '/' },
@@ -215,19 +216,24 @@ const Nav = () => {
         >
           {/* <FaRing size={20} style={{ color: GOLD }} /> */}
           <span
-            style={{ fontFamily: "'Cinzel Decorative', serif" }}
-            className="flex text-xl tracking-tight sm:text-2xl"
-          >
-             {BRAND.split('').map((letter, i) => (
-              <span
-                key={i}
-                ref={(el) => (logoLettersRef.current[i] = el)}
-                style={{ color: i < 4 ? CREAM : GOLD, display: 'inline-block' }}
-              >
-                {letter}
-              </span>
-            ))}
-          </span>
+  style={{ fontFamily: "'Cinzel Decorative', serif" }}
+  className="flex items-center text-xl tracking-tight sm:text-2xl"
+>
+  <img
+    src={logo}
+    alt={`${BRAND} logo`}
+    className="mr-2 h-9 w-9 object-contain sm:h-10 sm:w-10"
+  />
+  {BRAND.split('').map((letter, i) => (
+    <span
+      key={i}
+      ref={(el) => (logoLettersRef.current[i] = el)}
+      style={{ color: i < 4 ? CREAM : GOLD, display: 'inline-block' }}
+    >
+      {letter}
+    </span>
+  ))}
+</span>
           <span
             ref={logoUnderlineRef}
             className="pointer-events-none absolute -bottom-1.5 left-0 h-[1.5px] w-full scale-x-0"

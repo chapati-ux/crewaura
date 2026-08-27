@@ -19,7 +19,6 @@ const Gall = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Initial Header Entry Animation
       gsap.from(headerRef.current, {
         opacity: 0,
         y: 40,
@@ -31,12 +30,10 @@ const Gall = () => {
         }
       })
 
-      // 2. Staggered Grid Reveal & Dynamic Parallax Flow
       itemRefs.current.forEach((el, index) => {
         if (!el) return
         const img = el.querySelector('img')
 
-        // Fade & float up layout reveal
         gsap.fromTo(el, 
           { opacity: 0, y: 60 },
           { 
@@ -51,7 +48,6 @@ const Gall = () => {
           }
         )
 
-        // Smooth continuous image container parallax movement
         gsap.to(img, {
           yPercent: 12,
           ease: 'none',
@@ -64,7 +60,6 @@ const Gall = () => {
         })
       })
 
-      // 3. Button Entry Animation
       gsap.from(buttonRef.current, {
         opacity: 0,
         y: 30,
@@ -82,11 +77,9 @@ const Gall = () => {
 
   return (
     <section ref={containerRef} className="relative py-24 sm:py-32" style={{ backgroundColor: IVORY }}>
-      {/* Structural accent context divider lines */}
       <div className="absolute top-0 left-12 right-12 h-px" style={{ backgroundColor: LINE }} />
       
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Curated Editorial Header */}
         <div ref={headerRef} className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <span style={{ fontFamily: "'Cormorant Garamond', serif", color: GOLD }} className="text-xl italic tracking-wide">
@@ -101,7 +94,6 @@ const Gall = () => {
           </p>
         </div>
 
-        {/* Dynamic Asymmetric Masonry Layout Grid */}
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8 [column-fill:_balance]">
           {imgaes.slice(0, 6).map((item, i) => (
             <div
@@ -109,14 +101,12 @@ const Gall = () => {
               ref={(el) => (itemRefs.current[i] = el)}
               className={`break-inside-avoid relative w-full group overflow-hidden cursor-pointer ${item.aspect} bg-stone-900`}
             >
-              {/* Inner Parallax Wrap Window Container */}
               <div className="absolute inset-0 w-full h-[115%] -top-[10%] overflow-hidden">
                 <img
                   src={item.img}
                   alt={item.title}
                   className="w-full h-full object-cover will-change-transform transition-all duration-700 ease-out group-hover:scale-105"
                 />
-                {/* Editorial shadow fill wash overlay */}
                 <div 
                   className="absolute inset-0 transition-opacity duration-500 opacity-40 group-hover:opacity-85"
                   style={{
@@ -125,13 +115,11 @@ const Gall = () => {
                 />
               </div>
 
-              {/* Minimal Framed Border Accent Element */}
               <div 
                 className="absolute inset-4 z-20 pointer-events-none opacity-0 scale-95 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:scale-100"
                 style={{ border: `1px solid ${GOLD}40` }}
               />
 
-              {/* Display Meta Information Overlay */}
               <div className="absolute inset-x-0 bottom-0 z-30 p-8 transform translate-y-3 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 flex justify-between items-end">
                 <div>
                   <span className="text-[10px] tracking-widest uppercase block mb-1 text-amber-200/70" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -150,26 +138,29 @@ const Gall = () => {
         </div>
 
         {/* Call to Action Button Container */}
-        <div ref={buttonRef} className="mt-16 text-center">
+        <div ref={buttonRef} className="mt-16 flex justify-center">
           <Link
-          to={'/gallery'}
-            onClick={() => console.log('Load more clicked')}
-            style={{ 
-              fontFamily: "'Space Grotesk', sans-serif", 
-              borderColor: PURPLE,
-              color: PURPLE
+            to="/gallery"
+            className="group relative inline-flex items-center gap-3 overflow-hidden border px-8 py-3.5 text-sm tracking-wide transition-colors duration-500"
+            style={{
+              fontFamily: "'Unbounded', sans-serif",
+              borderColor: GOLD,
+              color: PURPLE,
             }}
-            className="inline-flex items-center justify-center px-8 py-3.5 border text-xs tracking-widest uppercase bg-transparent  hover:bg-[#2D1C3E] transition-all duration-300 ease-out group rounded-none hover:text-white"
           >
-            <span>View Full Gallery</span>
-            <svg 
-              className="ml-2 w-4 h-4 transform transition-transform duration-300 group-hover:translate-x-1" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
+            <span
+              className="absolute inset-0 -z-10 origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
+              style={{ backgroundColor: PURPLE }}
+            />
+            <span className="transition-colors duration-500 group-hover:text-white">
+              View Full Gallery
+            </span>
+            <span
+              className="transition-transform duration-500 group-hover:translate-x-1 group-hover:text-white"
+              style={{ color: GOLD }}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
+              →
+            </span>
           </Link>
         </div>
       </div>

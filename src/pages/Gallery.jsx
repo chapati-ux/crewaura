@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import galleryItems from '../data/gallary'
+import rawGalleryItems from '../data/gallary'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -20,6 +20,12 @@ const Gallery = () => {
   const itemRefs = useRef([])
   const videoRefs = useRef([])
   const buttonRef = useRef(null)
+
+  // Show newest items first — sort a copy by id, descending, without mutating the source data
+  const galleryItems = useMemo(
+    () => [...rawGalleryItems].sort((a, b) => b.id - a.id),
+    []
+  )
 
   // ---- Lightbox state ----
   const [activeIndex, setActiveIndex] = useState(null)
@@ -100,7 +106,7 @@ const Gallery = () => {
     }, pageRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [galleryItems])
 
   // ============ Lightbox open/close/navigate ============
   const openLightbox = (index) => setActiveIndex(index)
@@ -109,14 +115,14 @@ const Gallery = () => {
   const goNext = useCallback(() => {
     directionRef.current = 'next'
     setActiveIndex((prev) => (prev === null ? prev : (prev + 1) % galleryItems.length))
-  }, [])
+  }, [galleryItems.length])
 
   const goPrev = useCallback(() => {
     directionRef.current = 'prev'
     setActiveIndex((prev) =>
       prev === null ? prev : (prev - 1 + galleryItems.length) % galleryItems.length
     )
-  }, [])
+  }, [galleryItems.length])
 
   // Keyboard navigation while lightbox is open
   useEffect(() => {

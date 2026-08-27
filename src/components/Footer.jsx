@@ -1,7 +1,10 @@
 import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { FaInstagram, FaPinterestP, FaFacebookF } from "react-icons/fa";
+import { FaInstagram, FaPinterestP, FaFacebookF, FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
+import { HiOutlineEnvelope } from "react-icons/hi2";
+
+import logo from '../assets/logo/imglogo.png'
 gsap.registerPlugin(ScrollTrigger)
 
 const PURPLE_SOLID = '#2D1C3E'
@@ -14,6 +17,21 @@ const socials = [
     name: "Instagram",
     href: "https://www.instagram.com/crewaura.events/?hl=en",
     icon: FaInstagram,
+  },
+  {
+    name: "WhatsApp",
+    href: "https://wa.me/917021565980",
+    icon: FaWhatsapp,
+  },
+  {
+    name: "Email",
+    href: "mailto:Hello@crewaura.com",
+    icon: HiOutlineEnvelope,
+  },
+  {
+    name: "Phone",
+    href: "tel:+917021565980",
+    icon: FaPhoneAlt,
   },
   // {
   //   name: "Pinterest",
@@ -95,32 +113,39 @@ const Footer = () => {
       <div className="mx-auto max-w-7xl">
         {/* ============ Main grid ============ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 pb-14">
-          {/* Brand column */}
-          <div ref={(el) => (colRefs.current[0] = el)} className="lg:col-span-1">
-            <h3
-              style={{ fontFamily: "'Cinzel Decorative', sans-serif", color: IVORY }}
-              className="text-2xl font-light tracking-tight"
-            >
-              Crew <span style={{ color: GOLD }}>Aura</span>
-            </h3>
-            <p
-              style={{ fontFamily: "'Space Grotesk', sans-serif", color: IVORY }}
-              className="text-sm opacity-60 leading-relaxed mt-4 max-w-xs"
-            >
-              Thoughtful wedding planning for couples who want their day to feel entirely their own.
-            </p>
+         {/* Brand column */}
+<div ref={(el) => (colRefs.current[0] = el)} className="lg:col-span-1">
+  <div className="flex items-center gap-2.5">
+    <img
+      src={logo}
+      alt="Crew Aura logo"
+      className="h-10 w-10 object-contain sm:h-11 sm:w-11"
+    />
+    <h3
+      style={{ fontFamily: "'Cinzel Decorative', sans-serif", color: IVORY }}
+      className="text-2xl font-light tracking-tight"
+    >
+      Crew <span style={{ color: GOLD }}>Aura</span>
+    </h3>
+  </div>
+  <p
+    style={{ fontFamily: "'Space Grotesk', sans-serif", color: IVORY }}
+    className="text-sm opacity-60 leading-relaxed mt-4 max-w-xs"
+  >
+    Thoughtful wedding planning for couples who want their day to feel entirely their own.
+  </p>
 
-            {/* Socials */}
-          <div className="flex items-center gap-3 mt-6">
+  {/* Socials */}
+  <div className="flex items-center gap-3 mt-6">
   {socials.map((s) => {
     const Icon = s.icon;
+    const isExternal = s.href.startsWith('http');
 
     return (
       <a
         key={s.name}
         href={s.href}
-        target="_blank"
-        rel="noopener noreferrer"
+        {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         aria-label={s.name}
         className="w-10 h-10 flex items-center justify-center rounded-full border transition-all duration-300 hover:scale-110"
         style={{ borderColor: LINE, color: IVORY }}
@@ -138,7 +163,7 @@ const Footer = () => {
     );
   })}
 </div>
-          </div>
+</div>
 
           {/* Quick links */}
           <div ref={(el) => (colRefs.current[1] = el)}>
@@ -164,7 +189,7 @@ const Footer = () => {
           </div>
 
           {/* Services links */}
-          <div ref={(el) => (colRefs.current[2] = el)}>
+          {/* <div ref={(el) => (colRefs.current[2] = el)}>
             <span
               style={{ fontFamily: "'Space Grotesk', sans-serif", color: GOLD }}
               className="text-xs tracking-[0.25em] uppercase block mb-5"
@@ -184,7 +209,7 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* Contact */}
           <div ref={(el) => (colRefs.current[3] = el)}>

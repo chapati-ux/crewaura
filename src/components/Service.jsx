@@ -3,9 +3,17 @@ import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import services from '../data/services'
-
-// Unsplash images arrive large; request a smaller crop for optimized loading.
-const thumb = (url) => url.replace('w=800', 'w=600')
+import {
+  PiFlowerLotusLight,
+  PiChampagneLight,
+  PiCameraLight,
+  PiMusicNotesLight,
+  PiSparkleLight,
+  PiDiamondLight,
+  PiCakeLight,
+  PiCalendarHeartLight,
+  PiArrowUpRightLight,
+} from 'react-icons/pi'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -18,6 +26,20 @@ const LINE = 'rgba(45,28,62,0.15)'
 // How many services to preview on this section
 const PREVIEW_COUNT = 5
 
+// Fallback icon set cycled by index when a service has no explicit `icon` field
+const FALLBACK_ICONS = [
+  PiFlowerLotusLight,
+  PiChampagneLight,
+  PiCameraLight,
+  PiMusicNotesLight,
+  PiSparkleLight,
+  PiDiamondLight,
+  PiCakeLight,
+  PiCalendarHeartLight,
+]
+
+const getServiceIcon = (service, i) => service.icon || FALLBACK_ICONS[i % FALLBACK_ICONS.length]
+
 const Service = () => {
   const sectionRef = useRef(null)
   const eyebrowRef = useRef(null)
@@ -25,7 +47,6 @@ const Service = () => {
   const dividerLineRefs = useRef([])
   const cardRefs = useRef([])
   const blobRefs = useRef([])
-  const tiltRefs = useRef([]) // GSAP quickTo setters per card
   const ctaRef = useRef(null)
 
   const heading = 'Our Services'
@@ -60,12 +81,7 @@ const Service = () => {
       gsap.set(eyebrowRef.current, { opacity: 0, y: 15 })
       gsap.set(headingLettersRef.current, { y: 40, opacity: 0, rotate: () => gsap.utils.random(-6, 6) })
       gsap.set(dividerLineRefs.current, { scaleX: 0 })
-      gsap.set(cardRefs.current, { 
-        y: 60, 
-        opacity: 0, 
-        scale: 0.95, 
-        rotate: (i) => i % 2 === 0 ? 2 : -2 
-      })
+      gsap.set(cardRefs.current, { y: 40, opacity: 0, scale: 0.92 })
       gsap.set(ctaRef.current, { opacity: 0, y: 20 })
 
       const tl = gsap.timeline({
@@ -78,7 +94,7 @@ const Service = () => {
         .to(dividerLineRefs.current, { scaleX: 1, duration: 0.6, stagger: 0.1, ease: 'power2.inOut' }, '-=0.3')
         .to(
           cardRefs.current,
-          { y: 0, opacity: 1, scale: 1, rotate: 0, duration: 0.85, stagger: 0.12, ease: 'power3.out' },
+          { y: 0, opacity: 1, scale: 1, duration: 0.7, stagger: 0.08, ease: 'power3.out' },
           '-=0.2'
         )
         .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.6 }, '-=0.2')
@@ -86,31 +102,6 @@ const Service = () => {
 
     return () => ctx.revert()
   }, [])
-
-  // Cinematic 3D tilt tracking the cursor
-  const handleMove = (e, i) => {
-    const card = cardRefs.current[i]
-    if (!card) return
-    const rect = card.getBoundingClientRect()
-    const px = (e.clientX - rect.left) / rect.width - 0.5
-    const py = (e.clientY - rect.top) / rect.height - 0.5
-    
-    if (!tiltRefs.current[i]) {
-      tiltRefs.current[i] = {
-        rx: gsap.quickTo(card, 'rotateX', { duration: 0.5, ease: 'power2.out' }),
-        ry: gsap.quickTo(card, 'rotateY', { duration: 0.5, ease: 'power2.out' }),
-      }
-    }
-    tiltRefs.current[i].rx(py * -6)
-    tiltRefs.current[i].ry(px * 6)
-  }
-
-  const handleLeave = (i) => {
-    const t = tiltRefs.current[i]
-    if (!t) return
-    t.rx(0)
-    t.ry(0)
-  }
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden py-24 sm:py-32" style={{ backgroundColor: IVORY }}>
@@ -194,83 +185,163 @@ const Service = () => {
           </p>
         </div>
 
-        {/* Asymmetric Editorial Magazine Grid Layout */}
-        <div 
-          className="mt-20 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 auto-rows-[340px]" 
-          style={{ perspective: 1200 }}
-        >
-          {visibleServices.map((service, i) => {
-            // Generates an elegant magazine pattern layout layout dynamically
-            const isWide = i === 0 || i === 5; 
-            const isTall = i === 2 || i === 7;
+        {/* Compact Creative Card Grid */}
+    <div className="mt-20 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+  {visibleServices.map((service, i) => {
+    const Icon = getServiceIcon(service, i)
+    const isDark = i % 5 === 0
 
-            return (
-              <div
-                key={service.id}
-                ref={(el) => (cardRefs.current[i] = el)}
-                onMouseMove={(e) => handleMove(e, i)}
-                onMouseLeave={() => handleLeave(i)}
-                className={`group relative overflow-hidden bg-zinc-950 flex flex-col justify-end p-8 transition-shadow duration-500 hover:shadow-2xl cursor-pointer
-                  ${isWide ? 'sm:col-span-2' : ''} 
-                  ${isTall ? 'sm:row-span-2' : ''}`}
-                style={{
-                  transformStyle: 'preserve-3d',
-                  willChange: 'transform',
-                }}
-              >
-                {/* Full Card Visual Background Layer */}
-                <div className="absolute inset-0 z-0 overflow-hidden">
-                  <img
-                    src={thumb(service.image)}
-                    alt={service.title}
-                    className="h-full w-full object-cover transition-transform duration-700 ease-out scale-105 group-hover:scale-100 group-hover:rotate-1"
-                  />
-                  {/* Luxury editorial duotone color wash overlay */}
-                  <div
-                    className="absolute inset-0 opacity-85 transition-opacity duration-500 group-hover:opacity-95"
-                    style={{
-                      background: `linear-gradient(to top, ${PURPLE}ee 15%, ${PURPLE}aa 50%, transparent 100%)`,
-                    }}
-                  />
-                </div>
+    return (
+      <div
+        key={service.id}
+        ref={(el) => (cardRefs.current[i] = el)}
+        className={`
+          group relative min-h-[210px] overflow-hidden rounded-[20px] p-4
+          transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]
+          hover:-translate-y-2 hover:scale-[1.02]
+          ${isDark ? "bg-[#2D1C3E] text-white" : "bg-[#FBF7EF]"}
+        `}
+        style={{
+          border: `1px solid ${isDark ? "rgba(200,169,106,0.35)" : LINE}`,
+          boxShadow: isDark
+            ? "0 14px 30px -10px rgba(45,28,62,0.45)"
+            : "0 14px 30px -10px rgba(45,28,62,0.08)",
+        }}
+      >
+        {/* Animated mesh / aurora background */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+          style={{
+            background: isDark
+              ? `
+                radial-gradient(circle at 20% 20%, rgba(200,169,106,0.18) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(168,85,247,0.12) 0%, transparent 45%)
+              `
+              : `
+                radial-gradient(circle at 15% 25%, rgba(200,169,106,0.14) 0%, transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(45,28,62,0.06) 0%, transparent 50%)
+              `,
+          }}
+        />
 
-                {/* Framing Architecture Border Reveal Element */}
-                <div 
-                  className="absolute inset-4 z-10 pointer-events-none opacity-0 scale-105 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:scale-100"
-                  style={{ border: `1px solid ${GOLD}` }}
-                />
+        {/* Floating geometric accents */}
+        <div
+          className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full border border-[rgba(200,169,106,0.25)] opacity-40 transition-all duration-1000 group-hover:scale-125 group-hover:opacity-70 group-hover:rotate-12"
+        />
+        <div
+          className="pointer-events-none absolute -bottom-5 -left-5 h-14 w-14 rounded-full border border-[rgba(200,169,106,0.2)] opacity-30 transition-all duration-1000 delay-100 group-hover:scale-110 group-hover:opacity-60"
+        />
 
-                {/* Text Content Block Container */}
-                <div className="relative z-20 translate-y-6 transition-transform duration-500 ease-out group-hover:translate-y-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs tracking-widest font-light" style={{ color: GOLD }}>
-                      0{i + 1} //
-                    </span>
-                    <h3
-                      style={{ fontFamily: "'Unbounded', sans-serif" }}
-                      className="text-base text-white tracking-wide"
-                    >
-                      {service.title}
-                    </h3>
-                  </div>
+        {/* Top row */}
+        <div className="relative flex items-center justify-between">
+          <div
+            className="
+              relative flex h-10 w-10 items-center justify-center rounded-xl
+              transition-all duration-600 group-hover:rotate-[-8deg] group-hover:scale-110
+            "
+            style={{
+              background: isDark
+                ? "linear-gradient(145deg, rgba(200,169,106,0.18), rgba(200,169,106,0.05))"
+                : "linear-gradient(145deg, rgba(200,169,106,0.18), rgba(200,169,106,0.04))",
+              border: "1px solid rgba(200,169,106,0.5)",
+              boxShadow: "0 6px 16px -4px rgba(200,169,106,0.25)",
+            }}
+          >
+            {/* Soft pulse ring on hover */}
+            <div className="absolute inset-0 rounded-xl opacity-0 group-hover:animate-ping group-hover:opacity-20"
+                 style={{ backgroundColor: GOLD }} />
+            <Icon size={17} style={{ color: GOLD }} className="relative z-10" />
+          </div>
 
-                  {/* Expanding Divider Line Accent */}
-                  <div 
-                    className="h-px w-0 bg-gradient-to-r from-amber-200/50 to-transparent transition-all duration-500 group-hover:w-20 my-3"
-                  />
-
-                  {/* Fading Description copy block */}
-                  <p
-                    style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                    className="text-xs text-stone-300 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100 leading-relaxed max-w-sm"
-                  >
-                    {service.description}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+          {/* Service number */}
+          <span
+            className="text-lg font-medium tracking-tight opacity-70 transition-opacity duration-500 group-hover:opacity-100"
+            style={{ fontFamily: "'Unbounded', sans-serif" }}
+          >
+            {String(i + 1).padStart(2, "0")}
+          </span>
         </div>
+
+        {/* Content */}
+        <div className="relative mt-5">
+          <h3
+            className="text-[0.85rem] leading-snug tracking-tight"
+            style={{
+              fontFamily: "'Unbounded', sans-serif",
+              color: isDark ? IVORY : PURPLE,
+            }}
+          >
+            {service.title}
+          </h3>
+
+          {/* Animated gold underline */}
+          <div className="mt-2.5 flex items-center gap-1.5">
+            <div
+              className="h-[2px] w-5 rounded-full transition-all duration-700 group-hover:w-9"
+              style={{ backgroundColor: GOLD }}
+            />
+            <div
+              className="h-[2px] w-2 rounded-full opacity-40 transition-all duration-700 delay-75 group-hover:w-4 group-hover:opacity-80"
+              style={{ backgroundColor: GOLD }}
+            />
+          </div>
+
+          <p
+            className="mt-3 line-clamp-3 text-[0.72rem] leading-5 opacity-65 transition-opacity duration-500 group-hover:opacity-90"
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              color: isDark ? IVORY : TEXT,
+            }}
+          >
+            {service.description}
+          </p>
+        </div>
+
+        {/* Bottom action area */}
+        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+          <span
+            className="text-[9px] tracking-[0.16em] uppercase opacity-40 transition-opacity duration-500 group-hover:opacity-70"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Explore
+          </span>
+
+          {/* Arrow button */}
+          <div
+            className="
+              flex h-7 w-7 items-center justify-center rounded-full
+              border transition-all duration-600
+              group-hover:translate-x-1 group-hover:scale-110
+            "
+            style={{
+              borderColor: "rgba(200,169,106,0.5)",
+              backgroundColor: "rgba(200,169,106,0.08)",
+              color: GOLD,
+            }}
+          >
+            <span className="text-xs transition-transform duration-500 group-hover:rotate-45">
+              ↗
+            </span>
+          </div>
+        </div>
+
+        {/* Bottom sweeping gold line */}
+        <span
+          className="absolute bottom-0 left-0 h-[2px] w-0 rounded-r-full transition-all duration-800 ease-out group-hover:w-full"
+          style={{
+            background: `linear-gradient(90deg, ${GOLD}, rgba(200,169,106,0.3))`,
+          }}
+        />
+
+        {/* Corner accent spark */}
+        <div
+          className="absolute right-3 top-3 h-1.5 w-1.5 rounded-full opacity-0 transition-all duration-700 group-hover:opacity-100 group-hover:scale-150"
+          style={{ backgroundColor: GOLD, boxShadow: `0 0 10px ${GOLD}` }}
+        />
+      </div>
+    )
+  })}
+</div>
 
         {/* View All Services CTA */}
         <div ref={ctaRef} className="mt-16 flex justify-center">

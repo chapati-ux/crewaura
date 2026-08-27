@@ -187,7 +187,7 @@ const AboutUs = () => {
               >
                 <p>
                   Welcome to <strong style={{ color: PURPLE, fontWeight: 600 }}>Crew Aura</strong> — your premier narrative destination for unforgettable global celebrations. 
-                  Co-founded by Sahil Manjulkar & Nityanand Bankar, we meticulously blend artistic visual poetry with geometric operational precision. 
+                  founded by Sahil Manjulkar , we meticulously blend artistic visual poetry with geometric operational precision. 
                 </p>
                 <p>
                   From quiet beachside vows to massive ballroom corporate launches, we balance absolute elegance, infectious energy, and pristine execution.
