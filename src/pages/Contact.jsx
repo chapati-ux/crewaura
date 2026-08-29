@@ -31,11 +31,11 @@ const EVENT_TYPES = [
 ]
 
 const BUDGET_RANGES = [
-  'Under ₹5 Lakh',
-  '₹5 – 10 Lakh',
+  'Under ₹10 Lakh',
   '₹10 – 20 Lakh',
-  '₹20 – 40 Lakh',
-  '₹40 Lakh+',
+  '₹20 – 30 Lakh',
+  '₹30 – 40 Lakh',
+  '₹50 Lakh+',
   'Not sure yet',
   OTHER_VALUE,
 ]

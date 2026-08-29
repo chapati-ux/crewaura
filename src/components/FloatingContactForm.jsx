@@ -20,6 +20,19 @@ const EVENT_TYPES = [
   'Other Events',
 ]
 
+// Sentinel value for the custom "Other" budget option
+const OTHER_VALUE = 'Other'
+
+const BUDGET_RANGES = [
+  'Under ₹10 Lakh',
+  '₹10 – 20 Lakh',
+  '₹20 – 30 Lakh',
+  '₹30 – 40 Lakh',
+  '₹50 Lakh+',
+  'Not sure yet',
+  OTHER_VALUE,
+]
+
 // How long to wait after page load before the popup appears (ms)
 const APPEAR_DELAY = 5000
 
@@ -33,10 +46,13 @@ const FloatingContactForm = () => {
     email: '',
     phone: '',
     eventTypes: [], // now an array to support multiple selections
+    budget: '',
+    budgetOther: '', // free-text value when budget === OTHER_VALUE
     message: '',
   })
   const [status, setStatus] = useState('idle') // idle | sending | success | error
   const [eventDropdownOpen, setEventDropdownOpen] = useState(false)
+  const [budgetDropdownOpen, setBudgetDropdownOpen] = useState(false)
 
   const cardRef = useRef(null)
   const formRef = useRef(null)
@@ -46,6 +62,7 @@ const FloatingContactForm = () => {
   const successIconRef = useRef(null)
   const successTextRef = useRef(null)
   const eventDropdownRef = useRef(null)
+  const budgetDropdownRef = useRef(null)
 
   // Show the popup after a delay, unless the user already dismissed it this session
   useEffect(() => {
@@ -135,6 +152,18 @@ const FloatingContactForm = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [eventDropdownOpen])
 
+  // Close the budget dropdown when clicking outside of it
+  useEffect(() => {
+    if (!budgetDropdownOpen) return
+    const handleClickOutside = (e) => {
+      if (budgetDropdownRef.current && !budgetDropdownRef.current.contains(e.target)) {
+        setBudgetDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [budgetDropdownOpen])
+
   const handleClose = () => {
     if (cardRef.current) {
       gsap.to(cardRef.current, {
@@ -165,6 +194,16 @@ const FloatingContactForm = () => {
     })
   }
 
+  const selectBudget = (range) => {
+    setForm((prev) => ({
+      ...prev,
+      budget: range,
+      // Clear any previously typed custom amount when switching away from "Other"
+      budgetOther: range === OTHER_VALUE ? prev.budgetOther : '',
+    }))
+    setBudgetDropdownOpen(false)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('sending')
@@ -183,21 +222,28 @@ const FloatingContactForm = () => {
 
     const currentTimestamp = new Date().toLocaleString()
 
+    // Resolve the final budget value: the custom text when "Other" is chosen, otherwise the picked range
+    const resolvedBudget = form.budget === OTHER_VALUE ? form.budgetOther : form.budget
+
     try {
       await axios.post(SHEETDB_URL, {
         data: [
           {
             timestamp: currentTimestamp,
             source: 'Floating Popup',
-            ...form,
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
             // SheetDB stores flat cell values, so join the array into a readable string
             eventType: form.eventTypes.join(', '),
+            budgetRange: resolvedBudget,
+            message: form.message,
           },
         ],
       })
 
       setStatus('success')
-      setForm({ name: '', email: '', phone: '', eventTypes: [], message: '' })
+      setForm({ name: '', email: '', phone: '', eventTypes: [], budget: '', budgetOther: '', message: '' })
       sessionStorage.setItem(DISMISS_KEY, 'true')
     } catch (err) {
       console.error('Floating contact form submission failed:', err)
@@ -429,6 +475,88 @@ const FloatingContactForm = () => {
                     </span>
                   ))}
                 </div>
+              )}
+
+              {/* Budget range dropdown — reveals a free-text field when "Other" is chosen */}
+              <div className="relative" ref={budgetDropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setBudgetDropdownOpen((open) => !open)}
+                  className={`${fieldClass} flex items-center justify-between text-left`}
+                  style={inputStyle}
+                  aria-haspopup="listbox"
+                  aria-expanded={budgetDropdownOpen}
+                >
+                  <span
+                    className={form.budget === '' ? 'opacity-50' : ''}
+                    style={{ color: PURPLE }}
+                  >
+                    {form.budget === '' ? 'Estimated budget' : form.budget}
+                  </span>
+                  <FaChevronDown
+                    size={11}
+                    style={{
+                      color: PURPLE,
+                      opacity: 0.5,
+                      transform: budgetDropdownOpen ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.2s ease',
+                      flexShrink: 0,
+                      marginLeft: 8,
+                    }}
+                  />
+                </button>
+
+                {/* Hidden required input so native form validation still enforces a selection */}
+                <input
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  required
+                  value={form.budget}
+                  onChange={() => {}}
+                  className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
+                />
+
+                {budgetDropdownOpen && (
+                  <div
+                    role="listbox"
+                    className="absolute z-10 mt-1 w-full bg-white border shadow-lg max-h-56 overflow-y-auto"
+                    style={{ borderColor: LINE }}
+                  >
+                    {BUDGET_RANGES.map((range) => {
+                      const checked = form.budget === range
+                      return (
+                        <button
+                          type="button"
+                          key={range}
+                          role="option"
+                          aria-selected={checked}
+                          onClick={() => selectBudget(range)}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left cursor-pointer hover:bg-black/5 transition-colors"
+                          style={{
+                            color: PURPLE,
+                            fontFamily: "'Poppins', sans-serif",
+                            backgroundColor: checked ? 'rgba(200,169,106,0.12)' : 'transparent',
+                          }}
+                        >
+                          {range}
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {form.budget === OTHER_VALUE && (
+                <input
+                  name="budgetOther"
+                  type="text"
+                  required
+                  value={form.budgetOther}
+                  onChange={handleChange}
+                  placeholder="Tell us your budget"
+                  className={fieldClass}
+                  style={inputStyle}
+                />
               )}
 
               <textarea

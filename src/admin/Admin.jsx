@@ -20,10 +20,43 @@ import { FaSpinner, FaExclamationCircle, FaPhone, FaEnvelope } from 'react-icons
 const SHEETDB_URL = 'https://sheetdb.io/api/v1/ojuaqpmrsdyaq'
 
 // ---- Helpers ----
+
+// Google Sheets' date epoch (December 30, 1899) used by its internal serial date numbers
+const SHEETS_EPOCH_MS = Date.UTC(1899, 11, 30)
+const MS_PER_DAY = 24 * 60 * 60 * 1000
+
+// SheetDB/Google Sheets will sometimes return a timestamp as a raw serial number
+// (e.g. "46263.5907291667") instead of the date string that was originally submitted,
+// whenever the destination column is formatted as a date/number. This detects that
+// case and converts it back into a real Date; falls back to normal Date parsing otherwise.
 const parseTimestamp = (ts) => {
-  if (!ts) return null
+  if (ts === null || ts === undefined || ts === '') return null
+
+  const asString = String(ts).trim()
+  const isSerialNumber = /^\d+(\.\d+)?$/.test(asString)
+
+  if (isSerialNumber) {
+    const serial = parseFloat(asString)
+    const d = new Date(SHEETS_EPOCH_MS + serial * MS_PER_DAY)
+    return isNaN(d.getTime()) ? null : d
+  }
+
   const d = new Date(ts)
   return isNaN(d.getTime()) ? null : d
+}
+
+// Human-readable formatting for display. Falls back to the raw value if it can't be parsed.
+const formatTimestamp = (ts) => {
+  const d = parseTimestamp(ts)
+  if (!d) return ts || '—'
+  return d.toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Asia/Kolkata', // pin display to IST regardless of the viewer's own browser timezone
+  })
 }
 
 const isWithinLastDays = (date, days) => {
@@ -268,7 +301,7 @@ const DashboardContent = ({ enquiries, loading, error, onRetry, onViewAll, onSel
                   <p className="text-xs text-gray-400">{e.eventType || '—'} · {e.phone || e.email || '—'}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">{e.timestamp}</span>
+                  <span className="text-xs text-gray-400 whitespace-nowrap">{formatTimestamp(e.timestamp)}</span>
                   <CallButton phone={e.phone} variant="icon" />
                 </div>
               </button>
@@ -307,7 +340,7 @@ const EnquiryModal = ({ enquiry, onClose }) => {
           <div>
             <h2 className="text-lg font-semibold text-gray-800">{enquiry.name || 'Enquiry'}</h2>
             {enquiry.timestamp && (
-              <p className="text-xs text-gray-400 mt-0.5">Submitted {enquiry.timestamp}</p>
+              <p className="text-xs text-gray-400 mt-0.5">Submitted {formatTimestamp(enquiry.timestamp)}</p>
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -447,7 +480,7 @@ const EnquiryContent = ({ enquiries, loading, error, onRetry, selected, setSelec
                     <td className="px-4 py-3 text-gray-600">{enq.preferredDate || '—'}</td>
                     <td className="px-4 py-3 text-gray-600">{enq.guestCount || '—'}</td>
                     <td className="px-4 py-3 text-gray-600">{enq.budgetRange || '—'}</td>
-                    <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{enq.timestamp || '—'}</td>
+                    <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{formatTimestamp(enq.timestamp)}</td>
                     <td className="px-4 py-3">
                       <button
                         onClick={() => setSelected(enq)}
@@ -471,7 +504,7 @@ const EnquiryContent = ({ enquiries, loading, error, onRetry, selected, setSelec
               >
                 <div className="flex justify-between items-center mb-1">
                   <span className="font-medium text-gray-800">{enq.name || '—'}</span>
-                  <span className="text-xs text-gray-400">{enq.timestamp}</span>
+                  <span className="text-xs text-gray-400">{formatTimestamp(enq.timestamp)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-600">{enq.phone || '—'}</p>
@@ -554,7 +587,9 @@ const Admin = () => {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
-      <SideBar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <div className="md:sticky md:top-0 md:h-screen md:overflow-y-auto md:flex-shrink-0">
+        <SideBar activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
       <main className="flex-1 p-4 md:p-8 overflow-y-auto">{renderContent()}</main>
       <EnquiryModal enquiry={selected} onClose={() => setSelected(null)} />
     </div>

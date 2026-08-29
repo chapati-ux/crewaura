@@ -297,33 +297,7 @@ const Service = () => {
           </p>
         </div>
 
-        {/* Bottom action area */}
-        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-          <span
-            className="text-[9px] tracking-[0.16em] uppercase opacity-40 transition-opacity duration-500 group-hover:opacity-70"
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-          >
-            Explore
-          </span>
-
-          {/* Arrow button */}
-          <div
-            className="
-              flex h-7 w-7 items-center justify-center rounded-full
-              border transition-all duration-600
-              group-hover:translate-x-1 group-hover:scale-110
-            "
-            style={{
-              borderColor: "rgba(200,169,106,0.5)",
-              backgroundColor: "rgba(200,169,106,0.08)",
-              color: GOLD,
-            }}
-          >
-            <span className="text-xs transition-transform duration-500 group-hover:rotate-45">
-              ↗
-            </span>
-          </div>
-        </div>
+        
 
         {/* Bottom sweeping gold line */}
         <span
@@ -341,10 +315,87 @@ const Service = () => {
       </div>
     )
   })}
+
+  {/* Mobile-only "View All Services" card — hidden from sm breakpoint upward */}
+  <Link
+    to="/services"
+    className="
+      group relative flex min-h-[210px] flex-col items-center justify-center
+      overflow-hidden rounded-[20px] p-4 text-center
+      transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]
+      hover:-translate-y-2 hover:scale-[1.02]
+      sm:hidden
+    "
+    style={{
+      backgroundColor: PURPLE,
+      border: `1px solid rgba(200,169,106,0.35)`,
+      boxShadow: '0 14px 30px -10px rgba(45,28,62,0.45)',
+    }}
+  >
+    {/* Animated mesh / aurora background */}
+    <div
+      className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+      style={{
+        background: `
+          radial-gradient(circle at 20% 20%, rgba(200,169,106,0.18) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(168,85,247,0.12) 0%, transparent 45%)
+        `,
+      }}
+    />
+
+    {/* Floating geometric accents */}
+    <div className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full border border-[rgba(200,169,106,0.25)] opacity-40 transition-all duration-1000 group-hover:scale-125 group-hover:opacity-70 group-hover:rotate-12" />
+    <div className="pointer-events-none absolute -bottom-5 -left-5 h-14 w-14 rounded-full border border-[rgba(200,169,106,0.2)] opacity-30 transition-all duration-1000 delay-100 group-hover:scale-110 group-hover:opacity-60" />
+
+    <div
+      className="relative flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-600 group-hover:rotate-[-8deg] group-hover:scale-110"
+      style={{
+        background: 'linear-gradient(145deg, rgba(200,169,106,0.18), rgba(200,169,106,0.05))',
+        border: '1px solid rgba(200,169,106,0.5)',
+        boxShadow: '0 6px 16px -4px rgba(200,169,106,0.25)',
+      }}
+    >
+      <div
+        className="absolute inset-0 rounded-xl opacity-0 group-hover:animate-ping group-hover:opacity-20"
+        style={{ backgroundColor: GOLD }}
+      />
+      <PiArrowUpRightLight size={17} style={{ color: GOLD }} className="relative z-10" />
+    </div>
+
+    <h3
+      className="relative mt-5 text-[0.85rem] leading-snug tracking-tight"
+      style={{ fontFamily: "'Unbounded', sans-serif", color: IVORY }}
+    >
+      View All Services
+    </h3>
+
+    <div className="relative mt-2.5 flex items-center gap-1.5">
+      <div
+        className="h-[2px] w-5 rounded-full transition-all duration-700 group-hover:w-9"
+        style={{ backgroundColor: GOLD }}
+      />
+      <div
+        className="h-[2px] w-2 rounded-full opacity-40 transition-all duration-700 delay-75 group-hover:w-4 group-hover:opacity-80"
+        style={{ backgroundColor: GOLD }}
+      />
+    </div>
+
+    <span
+      className="absolute bottom-0 left-0 h-[2px] w-0 rounded-r-full transition-all duration-800 ease-out group-hover:w-full"
+      style={{
+        background: `linear-gradient(90deg, ${GOLD}, rgba(200,169,106,0.3))`,
+      }}
+    />
+
+    <div
+      className="absolute right-3 top-3 h-1.5 w-1.5 rounded-full opacity-0 transition-all duration-700 group-hover:opacity-100 group-hover:scale-150"
+      style={{ backgroundColor: GOLD, boxShadow: `0 0 10px ${GOLD}` }}
+    />
+  </Link>
 </div>
 
-        {/* View All Services CTA */}
-        <div ref={ctaRef} className="mt-16 flex justify-center">
+        {/* View All Services CTA — desktop/tablet only, mirrors the mobile card above */}
+        <div ref={ctaRef} className="mt-16 hidden justify-center sm:flex">
           <Link
             to="/services"
             className="group relative inline-flex items-center gap-3 overflow-hidden border px-8 py-3.5 text-sm tracking-wide transition-colors duration-500"
