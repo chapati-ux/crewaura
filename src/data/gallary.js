@@ -37,6 +37,10 @@ import g40 from '../assets/images/gallery/g30.jpeg'
 import g41 from '../assets/images/gallery/g31.jpeg'
 import g42 from '../assets/images/gallery/g32.jpeg'
 import g43 from '../assets/images/gallery/g33.jpeg'
+import g44 from '../assets/images/gallery/g34.jpeg'
+import g45 from '../assets/images/gallery/g35.jpeg'
+import g46 from '../assets/images/gallery/g36.jpeg'
+import g47 from '../assets/images/gallery/g37.jpeg'
 
 const galleryItems = [
   {
@@ -67,7 +71,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 6,
+  id: 4,
   media: "image",
   title: "Starlit Aisle",
   aspect: "aspect-[3/4]",
@@ -76,7 +80,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 8,
+  id: 5,
   media: "image",
   title: "Table for Two",
   aspect: "aspect-square",
@@ -85,7 +89,7 @@ const galleryItems = [
   year: "2026",
 },
  {
-  id: 10,
+  id: 6,
   media: "image",
   title: "Elegant Couple Portrait",
   aspect: "aspect-[4/5]",
@@ -94,7 +98,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 11,
+  id: 7,
   media: "image",
   title: "Romantic Moments",
   aspect: "aspect-[3/4]",
@@ -103,7 +107,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 12,
+  id: 8,
   media: "image",
   title: "Timeless Memories",
   aspect: "aspect-square",
@@ -112,7 +116,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 13,
+  id: 9,
   media: "image",
   title: "Wedding Celebration",
   aspect: "aspect-[4/5]",
@@ -121,7 +125,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 14,
+  id: 10,
   media: "image",
   title: "Luxury Venue",
   aspect: "aspect-[3/4]",
@@ -130,7 +134,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 27,
+  id: 11,
   media: "image",
   title: "Candid Laughter",
   aspect: "aspect-[3/4]",
@@ -139,7 +143,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 28,
+  id: 12,
   media: "image",
   title: "The Vow Exchange",
   aspect: "aspect-[4/5]",
@@ -148,7 +152,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 29,
+  id: 13,
   media: "image",
   title: "Dance Floor Energy",
   aspect: "aspect-square",
@@ -157,7 +161,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 30,
+  id: 14,
   media: "image",
   title: "Rings & Details",
   aspect: "aspect-[2/3]",
@@ -166,7 +170,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 31,
+  id: 15,
   media: "image",
   title: "Sunset Portraits",
   aspect: "aspect-[3/4]",
@@ -175,7 +179,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 32,
+  id: 16,
   media: "image",
   title: "Toast to Forever",
   aspect: "aspect-[4/5]",
@@ -184,7 +188,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 33,
+  id: 17,
   media: "image",
   title: "The Getting Ready",
   aspect: "aspect-square",
@@ -193,7 +197,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 34,
+  id: 18,
   media: "image",
   title: "Aisle Walk",
   aspect: "aspect-[3/4]",
@@ -202,7 +206,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 35,
+  id: 19,
   media: "image",
   title: "Family Gathered",
   aspect: "aspect-[4/5]",
@@ -211,7 +215,16 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 36,
+  id: 20,
+  media: "image",
+  title: "Backlit Embrace",
+  aspect: "aspect-[3/4]",
+  img: g46,
+  tag: "Couple",
+  year: "2026",
+},
+{
+  id: 21,
   media: "image",
   title: "The Cake Cutting",
   aspect: "aspect-square",
@@ -220,7 +233,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 37,
+  id: 22,
   media: "image",
   title: "Evening Glow",
   aspect: "aspect-[3/4]",
@@ -229,7 +242,16 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 38,
+  id: 23,
+  media: "image",
+  title: "First Look",
+  aspect: "aspect-[4/5]",
+  img: g44,
+  tag: "Portrait",
+  year: "2026",
+},
+{
+  id: 24,
   media: "image",
   title: "Bouquet Toss",
   aspect: "aspect-[4/5]",
@@ -238,7 +260,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 39,
+  id: 25,
   media: "image",
   title: "The Send-Off",
   aspect: "aspect-[3/4]",
@@ -247,7 +269,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 40,
+  id: 26,
   media: "image",
   title: "Quiet Reflections",
   aspect: "aspect-square",
@@ -256,7 +278,16 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 41,
+  id: 27,
+  media: "image",
+  title: "The Last Light",
+  aspect: "aspect-[2/3]",
+  img: g47,
+  tag: "Lighting",
+  year: "2026",
+},
+{
+  id: 28,
   media: "image",
   title: "The Guest Table",
   aspect: "aspect-[2/3]",
@@ -265,7 +296,7 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 42,
+  id: 29,
   media: "image",
   title: "Hand in Hand",
   aspect: "aspect-[4/5]",
@@ -274,7 +305,16 @@ const galleryItems = [
   year: "2026",
 },
 {
-  id: 43,
+  id: 30,
+  media: "image",
+  title: "Golden Confetti",
+  aspect: "aspect-square",
+  img: g45,
+  tag: "Celebration",
+  year: "2026",
+},
+{
+  id: 31,
   media: "image",
   title: "The Final Dance",
   aspect: "aspect-[3/4]",
