@@ -15,15 +15,11 @@ import g2 from '../assets/images/gallery/c2.webp'
 import g3 from '../assets/images/gallery/g2.webp'
 import g6 from '../assets/images/gallery/c1.webp'
 import g8 from '../assets/images/gallery/g4.jpg'
-import g9 from '../assets/images/gallery/21.webp'
 import g10 from '../assets/images/hero/g19.webp'
 import g11 from '../assets/images/hero/g23.webp'
 import g12 from '../assets/images/hero/g19.webp'
 import g13 from '../assets/images/hero/hero1.webp'
 import g14 from '../assets/images/hero/g22.webp'
-import g18 from '../assets/images/gallery/g13.webp'
-import g19 from '../assets/images/gallery/g14.webp'
-import g26 from '../assets/images/gallery/g21.webp'
 import g27 from '../assets/images/gallery/g1.jpeg'
 import g28 from '../assets/images/gallery/g2.jpeg'
 import g29 from '../assets/images/gallery/g3.jpeg'
@@ -88,15 +84,6 @@ const galleryItems = [
   tag: "Design",
   year: "2026",
 },
-{
-  id: 9,
-  media: "image",
-  title: "The First Look",
-  aspect: "aspect-[4/5]",
-  img: g9,
-  tag: "Candid",
-  year: "2026",
-},
  {
   id: 10,
   media: "image",
@@ -140,33 +127,6 @@ const galleryItems = [
   aspect: "aspect-[3/4]",
   img: g14,
   tag: "Venue",
-  year: "2026",
-},
-{
-  id: 18,
-  media: "image",
-  title: "Reception Decor",
-  aspect: "aspect-square",
-  img: g18,
-  tag: "Reception",
-  year: "2026",
-},
-{
-  id: 19,
-  media: "image",
-  title: "Elegant Entrance",
-  aspect: "aspect-[4/5]",
-  img: g19,
-  tag: "Entrance",
-  year: "2026",
-},
-{
-  id: 26,
-  media: "image",
-  title: "Forever Together",
-  aspect: "aspect-[3/4]",
-  img: g26,
-  tag: "Love",
   year: "2026",
 },
 {

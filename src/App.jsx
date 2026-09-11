@@ -16,7 +16,8 @@ import Footer from "./components/Footer";
 import FloatingContactDock from "./components/FloatingContactDock";
 import FloatingContactForm from "./components/FloatingContactForm";
 import Admin from "./admin/Admin";
-
+import Login from "./pages/Login";
+import ProtectedRoute from "./auth/ProtectedRoute";
 gsap.registerPlugin(ScrollTrigger);
 
 function ScrollRefreshOnRouteChange() {
@@ -42,14 +43,22 @@ function App() {
       {!isAdminRoute && <Nav />}
       {!isAdminRoute && <FloatingContactForm />}
       <ScrollRefreshOnRouteChange />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/admin/*" element={<Admin />} />
-      </Routes>
+     <Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/about" element={<About />} />
+  <Route path="/contact" element={<Contact />} />
+  <Route path="/gallery" element={<Gallery />} />
+  <Route path="/services" element={<Services />} />
+  <Route path="/admin/login" element={<Login />} />
+  <Route
+    path="/admin/*"
+    element={
+      <ProtectedRoute>
+        <Admin />
+      </ProtectedRoute>
+    }
+  />
+</Routes>
       {!isAdminRoute && <FloatingContactDock />}
       {!isAdminRoute && <Footer />}
     </>

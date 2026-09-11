@@ -3,6 +3,9 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import images from '../data/gallary';
 
+const PURPLE = '#2D1C3E';
+const GOLD = '#C8A96A';
+
 function debounce(func, wait) {
   let timeout;
   return function (...args) {
@@ -238,7 +241,7 @@ class Media {
     this.font = font;
     this.createShader();
     this.createMesh();
-    this.createTitle();
+    // this.createTitle();  <-- disabled: titles from gallary.js no longer rendered on the canvas
     this.onResize();
   }
   createShader() {
@@ -640,37 +643,65 @@ export default function CircularGallery({
   }, [items, bend, textColor, borderRadius, font, fontUrl, scrollSpeed, scrollEase]);
 
   return (
-    <div className="relative w-full h-[100vh] sm:h-[70vh] md:h-[75vh] lg:h-[80vh]">
-      <div
-        className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
-        tabIndex={0}
-        role="region"
-        aria-label="Circular image gallery. Use Left and Right Arrow keys to navigate."
-        ref={containerRef}
-      />
-   <Link
-  to="/gallery"
-  className="group absolute bottom-4 left-1/2 z-10 -translate-x-1/2 inline-flex items-center gap-3 overflow-hidden border px-8 py-3.5 text-sm tracking-wide transition-colors duration-500 sm:bottom-6 md:bottom-8"
-  style={{
-    fontFamily: "'Unbounded', sans-serif",
-    borderColor: '#C8A96A',
-    color: '#2D1C3E',
-  }}
->
-  <span
-    className="absolute inset-0 -z-10 origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
-    style={{ backgroundColor: '#2D1C3E' }}
-  />
-  <span className="transition-colors duration-500 group-hover:text-white">
-    View Gallery
-  </span>
-  <span
-    className="transition-transform duration-500 group-hover:translate-x-1 group-hover:text-white"
-    style={{ color: '#C8A96A' }}
-  >
-    →
-  </span>
-</Link>
-    </div>
+    <section className="relative w-full">
+      {/* Heading + intro copy above the canvas */}
+      <div className="mx-auto max-w-2xl px-6 lg:px-8 pt-20 pb-10 sm:pt-24 sm:pb-12 text-center">
+        <span
+          className="text-lg italic tracking-wide"
+          style={{ fontFamily: "'Cormorant Garamond', serif", color: GOLD }}
+        >
+          Moments We've Captured
+        </span>
+        <h2
+          className="mt-3 text-3xl sm:text-4xl md:text-5xl font-light tracking-tight"
+          style={{ fontFamily: "'Unbounded', sans-serif", color: PURPLE }}
+        >
+          A Glimpse Into Our Gallery
+        </h2>
+        <p
+          className="mx-auto mt-4 max-w-xl text-sm sm:text-base leading-relaxed opacity-70"
+          style={{ fontFamily: "'Space Grotesk', sans-serif", color: PURPLE }}
+        >
+          A small selection of real weddings and celebrations we've had the joy of bringing to
+          life. Drag, scroll, or use the arrow keys to look around.
+        </p>
+      </div>
+
+      {/* Canvas — the circular drag/scroll gallery itself */}
+      <div className="relative w-full h-[100vh] sm:h-[70vh] md:h-[75vh] lg:h-[80vh]">
+        <div
+          className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+          tabIndex={0}
+          role="region"
+          aria-label="Circular image gallery. Use Left and Right Arrow keys to navigate."
+          ref={containerRef}
+        />
+      </div>
+
+      {/* CTA — sits below the canvas in normal flow, clear of the images */}
+      <div className="flex justify-center px-6 pt-8 pb-16 sm:pt-10 sm:pb-20">
+        <Link
+          to="/gallery"
+          className="group relative inline-flex items-center gap-3 overflow-hidden border px-8 py-3.5 text-sm tracking-wide transition-colors duration-500"
+          style={{
+            fontFamily: "'Unbounded', sans-serif",
+            borderColor: GOLD,
+            color: PURPLE
+          }}
+        >
+          <span
+            className="absolute inset-0 -z-10 origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
+            style={{ backgroundColor: PURPLE }}
+          />
+          <span className="transition-colors duration-500 group-hover:text-white">View Gallery</span>
+          <span
+            className="transition-transform duration-500 group-hover:translate-x-1 group-hover:text-white"
+            style={{ color: GOLD }}
+          >
+            →
+          </span>
+        </Link>
+      </div>
+    </section>
   );
 }

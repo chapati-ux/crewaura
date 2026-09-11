@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import axios from 'axios'
 import SideBar from './SideBar'
+import { supabase } from '../utils/supabase'
 import {
   MdMailOutline,
   MdSearch,
@@ -16,31 +16,12 @@ import {
 } from 'react-icons/md'
 import { FaSpinner, FaExclamationCircle, FaPhone, FaEnvelope } from 'react-icons/fa'
 
-// Same SheetDB endpoint used by the Contact form
-const SHEETDB_URL = 'https://sheetdb.io/api/v1/ojuaqpmrsdyaq'
-
 // ---- Helpers ----
 
-// Google Sheets' date epoch (December 30, 1899) used by its internal serial date numbers
-const SHEETS_EPOCH_MS = Date.UTC(1899, 11, 30)
-const MS_PER_DAY = 24 * 60 * 60 * 1000
-
-// SheetDB/Google Sheets will sometimes return a timestamp as a raw serial number
-// (e.g. "46263.5907291667") instead of the date string that was originally submitted,
-// whenever the destination column is formatted as a date/number. This detects that
-// case and converts it back into a real Date; falls back to normal Date parsing otherwise.
+// Supabase's `created_at` column is a real timestamptz, returned as an ISO string —
+// no more Google Sheets serial-number parsing needed.
 const parseTimestamp = (ts) => {
   if (ts === null || ts === undefined || ts === '') return null
-
-  const asString = String(ts).trim()
-  const isSerialNumber = /^\d+(\.\d+)?$/.test(asString)
-
-  if (isSerialNumber) {
-    const serial = parseFloat(asString)
-    const d = new Date(SHEETS_EPOCH_MS + serial * MS_PER_DAY)
-    return isNaN(d.getTime()) ? null : d
-  }
-
   const d = new Date(ts)
   return isNaN(d.getTime()) ? null : d
 }
@@ -57,6 +38,14 @@ const formatTimestamp = (ts) => {
     minute: '2-digit',
     timeZone: 'Asia/Kolkata', // pin display to IST regardless of the viewer's own browser timezone
   })
+}
+
+// event_type is a Postgres text[] column now, so it can arrive as an array, a single
+// string (legacy rows), or null/undefined — normalize all of those into display text.
+const formatEventType = (eventType) => {
+  if (!eventType) return ''
+  if (Array.isArray(eventType)) return eventType.join(', ')
+  return String(eventType)
 }
 
 const isWithinLastDays = (date, days) => {
@@ -143,15 +132,20 @@ const StatCard = ({ icon: Icon, label, value, accent }) => (
 const DashboardContent = ({ enquiries, loading, error, onRetry, onViewAll, onSelect }) => {
   const stats = useMemo(() => {
     const total = enquiries.length
-    const withDates = enquiries.map((e) => ({ ...e, _date: parseTimestamp(e.timestamp) }))
+    const withDates = enquiries.map((e) => ({ ...e, _date: parseTimestamp(e.created_at) }))
 
     const last7Days = withDates.filter((e) => isWithinLastDays(e._date, 7)).length
     const last30Days = withDates.filter((e) => isWithinLastDays(e._date, 30)).length
 
+    // event_type is an array — count each individual type, not the combined set,
+    // so an enquiry tagged ["Wedding", "Reception"] contributes to both buckets.
     const typeCounts = {}
     enquiries.forEach((e) => {
-      const type = e.eventType?.trim()
-      if (type) typeCounts[type] = (typeCounts[type] || 0) + 1
+      const types = Array.isArray(e.event_type) ? e.event_type : e.event_type ? [e.event_type] : []
+      types.forEach((type) => {
+        const trimmed = type?.trim()
+        if (trimmed) typeCounts[trimmed] = (typeCounts[trimmed] || 0) + 1
+      })
     })
     const topType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0]
 
@@ -161,8 +155,8 @@ const DashboardContent = ({ enquiries, loading, error, onRetry, onViewAll, onSel
       .map(([type, count]) => ({ type, count, pct: total ? Math.round((count / total) * 100) : 0 }))
 
     const upcoming = enquiries
-      .filter((e) => isUpcoming(e.preferredDate, 30))
-      .sort((a, b) => new Date(a.preferredDate) - new Date(b.preferredDate))
+      .filter((e) => isUpcoming(e.preferred_date, 30))
+      .sort((a, b) => new Date(a.preferred_date) - new Date(b.preferred_date))
       .slice(0, 5)
 
     const recent = withDates
@@ -260,11 +254,11 @@ const DashboardContent = ({ enquiries, loading, error, onRetry, onViewAll, onSel
                     <MdOutlineCalendarToday className="text-blue-600" size={18} />
                     <div>
                       <p className="text-sm font-medium text-gray-800">{e.name || 'Unnamed'}</p>
-                      <p className="text-xs text-gray-400">{e.eventType || 'Event'}</p>
+                      <p className="text-xs text-gray-400">{formatEventType(e.event_type) || 'Event'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500 whitespace-nowrap">{e.preferredDate}</span>
+                    <span className="text-xs text-gray-500 whitespace-nowrap">{e.preferred_date}</span>
                     <CallButton phone={e.phone} variant="icon" />
                   </div>
                 </button>
@@ -298,10 +292,10 @@ const DashboardContent = ({ enquiries, loading, error, onRetry, onViewAll, onSel
               >
                 <div>
                   <p className="text-sm font-medium text-gray-800">{e.name || 'Unnamed'}</p>
-                  <p className="text-xs text-gray-400">{e.eventType || '—'} · {e.phone || e.email || '—'}</p>
+                  <p className="text-xs text-gray-400">{formatEventType(e.event_type) || '—'} · {e.phone || e.email || '—'}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400 whitespace-nowrap">{formatTimestamp(e.timestamp)}</span>
+                  <span className="text-xs text-gray-400 whitespace-nowrap">{formatTimestamp(e.created_at)}</span>
                   <CallButton phone={e.phone} variant="icon" />
                 </div>
               </button>
@@ -320,11 +314,11 @@ const EnquiryModal = ({ enquiry, onClose }) => {
   const rows = [
     { icon: FaPhone, label: 'Phone', value: enquiry.phone },
     { icon: FaEnvelope, label: 'Email', value: enquiry.email },
-    { icon: MdOutlineEventNote, label: 'Event Type', value: enquiry.eventType },
-    { icon: MdOutlineCalendarToday, label: 'Preferred Date', value: enquiry.preferredDate },
-    { icon: MdOutlinePeople, label: 'Expected Guests', value: enquiry.guestCount },
-    { icon: MdOutlineCurrencyRupee, label: 'Budget Range', value: enquiry.budgetRange },
-    { icon: MdOutlineLocationOn, label: 'Venue Preference', value: enquiry.venuePreference },
+    { icon: MdOutlineEventNote, label: 'Event Type', value: formatEventType(enquiry.event_type) },
+    { icon: MdOutlineCalendarToday, label: 'Preferred Date', value: enquiry.preferred_date },
+    { icon: MdOutlinePeople, label: 'Expected Guests', value: enquiry.guest_count },
+    { icon: MdOutlineCurrencyRupee, label: 'Budget Range', value: enquiry.budget_range },
+    { icon: MdOutlineLocationOn, label: 'Venue Preference', value: enquiry.venue_preference },
   ].filter((r) => r.value)
 
   return (
@@ -339,8 +333,8 @@ const EnquiryModal = ({ enquiry, onClose }) => {
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 sticky top-0 bg-white">
           <div>
             <h2 className="text-lg font-semibold text-gray-800">{enquiry.name || 'Enquiry'}</h2>
-            {enquiry.timestamp && (
-              <p className="text-xs text-gray-400 mt-0.5">Submitted {formatTimestamp(enquiry.timestamp)}</p>
+            {enquiry.created_at && (
+              <p className="text-xs text-gray-400 mt-0.5">Submitted {formatTimestamp(enquiry.created_at)}</p>
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -398,7 +392,7 @@ const EnquiryContent = ({ enquiries, loading, error, onRetry, selected, setSelec
       enq.name?.toLowerCase().includes(q) ||
       enq.email?.toLowerCase().includes(q) ||
       enq.phone?.toLowerCase().includes(q) ||
-      enq.eventType?.toLowerCase().includes(q)
+      formatEventType(enq.event_type).toLowerCase().includes(q)
     )
   })
 
@@ -476,11 +470,11 @@ const EnquiryContent = ({ enquiries, loading, error, onRetry, selected, setSelec
                       </div>
                       {enq.email && <div className="text-xs text-gray-400">{enq.email}</div>}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{enq.eventType || '—'}</td>
-                    <td className="px-4 py-3 text-gray-600">{enq.preferredDate || '—'}</td>
-                    <td className="px-4 py-3 text-gray-600">{enq.guestCount || '—'}</td>
-                    <td className="px-4 py-3 text-gray-600">{enq.budgetRange || '—'}</td>
-                    <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{formatTimestamp(enq.timestamp)}</td>
+                    <td className="px-4 py-3 text-gray-600">{formatEventType(enq.event_type) || '—'}</td>
+                    <td className="px-4 py-3 text-gray-600">{enq.preferred_date || '—'}</td>
+                    <td className="px-4 py-3 text-gray-600">{enq.guest_count || '—'}</td>
+                    <td className="px-4 py-3 text-gray-600">{enq.budget_range || '—'}</td>
+                    <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{formatTimestamp(enq.created_at)}</td>
                     <td className="px-4 py-3">
                       <button
                         onClick={() => setSelected(enq)}
@@ -504,7 +498,7 @@ const EnquiryContent = ({ enquiries, loading, error, onRetry, selected, setSelec
               >
                 <div className="flex justify-between items-center mb-1">
                   <span className="font-medium text-gray-800">{enq.name || '—'}</span>
-                  <span className="text-xs text-gray-400">{formatTimestamp(enq.timestamp)}</span>
+                  <span className="text-xs text-gray-400">{formatTimestamp(enq.created_at)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-600">{enq.phone || '—'}</p>
@@ -512,14 +506,14 @@ const EnquiryContent = ({ enquiries, loading, error, onRetry, selected, setSelec
                 </div>
                 {enq.email && <p className="text-sm text-gray-500">{enq.email}</p>}
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {enq.eventType && (
+                  {enq.event_type && (
                     <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">
-                      {enq.eventType}
+                      {formatEventType(enq.event_type)}
                     </span>
                   )}
-                  {enq.budgetRange && (
+                  {enq.budget_range && (
                     <span className="text-xs bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full">
-                      {enq.budgetRange}
+                      {enq.budget_range}
                     </span>
                   )}
                 </div>
@@ -543,8 +537,14 @@ const Admin = () => {
     setLoading(true)
     setError(false)
     try {
-      const res = await axios.get(SHEETDB_URL)
-      setEnquiries([...res.data].reverse())
+      const { data, error: fetchError } = await supabase
+        .from('contact_submissions')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (fetchError) throw fetchError
+
+      setEnquiries(data || [])
     } catch (err) {
       console.error('Failed to fetch enquiries:', err)
       setError(true)

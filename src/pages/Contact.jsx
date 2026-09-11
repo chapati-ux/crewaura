@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
-import axios from 'axios'
 import { FaRing, FaPhone, FaEnvelope, FaMapMarkerAlt, FaSpinner, FaCheckCircle, FaExclamationCircle, FaChevronDown, FaTimes } from 'react-icons/fa'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { supabase } from '../utils/supabase'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -10,9 +10,6 @@ const PURPLE = '#2D1C3E'
 const GOLD = '#C8A96A'
 const IVORY = '#FBF7EF'
 const LINE = 'rgba(45,28,62,0.12)'
-
-// SheetDB API endpoint mapping to your spreadsheet instance
-const SHEETDB_URL = 'https://sheetdb.io/api/v1/ojuaqpmrsdyaq'
 
 // Google Maps iframe target embedding link
 const MAPS_EMBED_SRC =
@@ -150,34 +147,33 @@ const Contact = () => {
       .to(buttonRef.current, { scale: 0.94, duration: 0.12, ease: 'power2.out' })
       .to(buttonRef.current, { scale: 1, duration: 0.3, ease: 'elastic.out(1, 0.5)' })
 
-    const currentTimestamp = new Date().toLocaleString()
-
     // Build the final list of event types, swapping in the free-text value for "Other"
     const resolvedEventTypes = form.eventTypes.map((type) =>
       type === OTHER_VALUE ? form.eventTypeOther : type
     )
 
+    const resolvedGuestCount =
+      form.guestCount === OTHER_VALUE ? form.guestCountOther : form.guestCount
+    const resolvedBudgetRange =
+      form.budgetRange === OTHER_VALUE ? form.budgetRangeOther : form.budgetRange
+
+    // Maps 1:1 to the contact_submissions table columns in Supabase
     const payload = {
-      ...form,
-      // SheetDB stores flat cell values, so join the array into a readable string
-      eventType: resolvedEventTypes.join(', '),
-      guestCount: form.guestCount === OTHER_VALUE ? form.guestCountOther : form.guestCount,
-      budgetRange: form.budgetRange === OTHER_VALUE ? form.budgetRangeOther : form.budgetRange,
+      name: form.name,
+      email: form.email || null,
+      phone: form.phone,
+      event_type: resolvedEventTypes, // text[] column — array sent directly
+      preferred_date: form.preferredDate || null, // empty string breaks a date column
+      guest_count: resolvedGuestCount || null,
+      budget_range: resolvedBudgetRange || null,
+      venue_preference: form.venuePreference || null,
+      message: form.message || null,
     }
-    delete payload.eventTypes
-    delete payload.eventTypeOther
-    delete payload.guestCountOther
-    delete payload.budgetRangeOther
 
     try {
-      await axios.post(SHEETDB_URL, {
-        data: [
-          {
-            timestamp: currentTimestamp,
-            ...payload,
-          },
-        ],
-      })
+      const { error } = await supabase.from('contact_submissions').insert([payload])
+
+      if (error) throw error
 
       setStatus('success')
       setForm({

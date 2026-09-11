@@ -5,6 +5,7 @@ import Service from "../components/Service";
 import Gall from "../components/Gall";
 import Testimonial from "../components/Testimonial";
 import CircularGallery from "../reactbit/CircularGallery";
+import BookEventSection from "../components/Bookeventsection";
 
 const Home = () => {
   return (
@@ -25,6 +26,7 @@ const Home = () => {
         scrollSpeed={2}
       />
       <Testimonial />
+      <BookEventSection/>
     </div>
   );
 };

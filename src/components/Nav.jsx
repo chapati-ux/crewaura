@@ -292,25 +292,38 @@ const Nav = () => {
           </span>
         </Link>
 
-        {/* Mobile Toggle */}
-        <button
-          type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
-          aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
-          aria-expanded={isOpen}
-          className="relative z-[60] inline-flex items-center justify-center rounded-full p-2 lg:hidden"
-          style={{ color: isOpen ? GOLD : CREAM }}
-        >
-          {isOpen ? (
-            <HiOutlineXMark size={28} />
-          ) : (
-            <span className="flex flex-col gap-1.5">
-              <span className="block h-0.5 w-6 rounded-full" style={{ backgroundColor: CREAM }} />
-              <span className="block h-0.5 w-4 rounded-full" style={{ backgroundColor: GOLD }} />
-              <span className="block h-0.5 w-6 rounded-full" style={{ backgroundColor: CREAM }} />
-            </span>
-          )}
-        </button>
+        {/* Mobile-only right side: a compact "Book Your Event" button sits in the header bar
+            itself (outside the full-screen menu), next to the hamburger toggle */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <Link
+            to="/contact"
+            onClick={() => setIsOpen(false)}
+            style={{ backgroundColor: GOLD, fontFamily: "'Space Grotesk', sans-serif", color: PURPLE_SOLID }}
+            className="inline-flex rounded-full px-4 py-2 text-xs font-semibold shadow-sm"
+          >
+            Book Your Event
+          </Link>
+
+          {/* Mobile Toggle */}
+          <button
+            type="button"
+            onClick={() => setIsOpen((prev) => !prev)}
+            aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isOpen}
+            className="relative z-[60] inline-flex items-center justify-center rounded-full p-2"
+            style={{ color: isOpen ? GOLD : CREAM }}
+          >
+            {isOpen ? (
+              <HiOutlineXMark size={28} />
+            ) : (
+              <span className="flex flex-col gap-1.5">
+                <span className="block h-0.5 w-6 rounded-full" style={{ backgroundColor: CREAM }} />
+                <span className="block h-0.5 w-4 rounded-full" style={{ backgroundColor: GOLD }} />
+                <span className="block h-0.5 w-6 rounded-full" style={{ backgroundColor: CREAM }} />
+              </span>
+            )}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Menu — full-screen clip-path reveal */}
