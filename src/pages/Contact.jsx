@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { FaRing, FaPhone, FaEnvelope, FaMapMarkerAlt, FaSpinner, FaCheckCircle, FaExclamationCircle, FaChevronDown, FaTimes } from 'react-icons/fa'
+import { FaRing, FaPhone, FaEnvelope, FaMapMarkerAlt, FaCheckCircle, FaExclamationCircle, FaChevronDown, FaTimes } from 'react-icons/fa'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { supabase } from '../utils/supabase'
+import SEO from '../components/SEO'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -12,6 +13,8 @@ const IVORY = '#FBF7EF'
 const LINE = 'rgba(45,28,62,0.12)'
 
 // Google Maps iframe target embedding link
+// NOTE: these coordinates point to central Mumbai. Generate a new embed link
+// for your real Navi Mumbai location before enabling the map.
 const MAPS_EMBED_SRC =
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3768.6!2d72.8777!3d19.0760!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDA0JzMzLjYiTiA3MsKwNTInMzkuNyJF!5e0!3m2!1sen!2sin!4v1700000000000'
 
@@ -45,6 +48,27 @@ const GUEST_COUNTS = [
   '500+',
   OTHER_VALUE,
 ]
+
+const contactSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contact Crew Aura',
+  url: 'https://crewaura.com/contact',
+  mainEntity: {
+    '@type': 'LocalBusiness',
+    name: 'Crew Aura',
+    url: 'https://crewaura.com',
+    telephone: '+91-7021565980',
+    email: 'hello@crewaura.com',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Navi Mumbai',
+      addressRegion: 'Maharashtra',
+      addressCountry: 'IN',
+    },
+    areaServed: ['Navi Mumbai', 'Mumbai', 'India'],
+  },
+}
 
 const Contact = () => {
   const pageRef = useRef(null)
@@ -220,438 +244,455 @@ const Contact = () => {
   const showEventOther = form.eventTypes.includes(OTHER_VALUE)
 
   return (
-    <main ref={pageRef} className="min-h-screen pt-28 pb-24" style={{ backgroundColor: IVORY }}>
-      <div ref={heroRef} className="mx-auto max-w-3xl px-6 text-center lg:px-8">
-        <FaRing className="mx-auto mb-6" size={32} style={{ color: GOLD }} />
-        <span
-          className="text-xs font-medium uppercase tracking-[0.3em]"
-          style={{ color: GOLD, fontFamily: "'Poppins', sans-serif" }}
-        >
-          Let's Plan Together
-        </span>
-        <h1
-          className="mt-4 text-4xl leading-tight sm:text-5xl"
-          style={{ color: PURPLE, fontFamily: "'Playfair Display', serif" }}
-        >
-          Book a Consultation
-        </h1>
-        <p
-          className="mx-auto mt-6 max-w-xl text-base leading-relaxed sm:text-lg"
-          style={{ color: PURPLE, opacity: 0.7, fontFamily: "'Poppins', sans-serif" }}
-        >
-          Tell us a little about your big day, and we'll be in touch within 24 hours to schedule
-          your complimentary consultation.
-        </p>
-      </div>
+    <>
+      <SEO
+        title="Contact Us | Book a Wedding Consultation"
+        description="Planning a destination wedding? Contact Crew Aura in Navi Mumbai to book a complimentary consultation. Call +91 7021565980 or send us your details."
+        schema={contactSchema}
+      />
 
-      <div className="mx-auto max-w-6xl px-6 lg:px-8 mt-16 grid grid-cols-1 lg:grid-cols-5 gap-12">
-        <div
-          ref={formColRef}
-          className="lg:col-span-3 p-8 sm:p-10"
-          style={{ backgroundColor: '#fff', border: `1px solid ${LINE}` }}
-        >
-          <h2
-            className="text-2xl mb-8"
+      <main ref={pageRef} className="min-h-screen pt-28 pb-24" style={{ backgroundColor: IVORY }}>
+        <div ref={heroRef} className="mx-auto max-w-3xl px-6 text-center lg:px-8">
+          <FaRing className="mx-auto mb-6" size={32} style={{ color: GOLD }} aria-hidden="true" />
+          <span
+            className="text-xs font-medium uppercase tracking-[0.3em]"
+            style={{ color: GOLD, fontFamily: "'Poppins', sans-serif" }}
+          >
+            Let's Plan Together
+          </span>
+          <h1
+            className="mt-4 text-4xl leading-tight sm:text-5xl"
             style={{ color: PURPLE, fontFamily: "'Playfair Display', serif" }}
           >
-            Send Us a Message
-          </h2>
+            Book a Destination Wedding Consultation
+          </h1>
+          <p
+            className="mx-auto mt-6 max-w-xl text-base leading-relaxed sm:text-lg"
+            style={{ color: PURPLE, opacity: 0.7, fontFamily: "'Poppins', sans-serif" }}
+          >
+            Tell us a little about your big day, and we'll be in touch within 24 hours to schedule
+            your complimentary consultation with our Navi Mumbai wedding planning team.
+          </p>
+        </div>
 
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="name" className={labelClass} style={labelStyle}>
-                  Full Name
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Enter Your Name"
-                  className={fieldClass}
-                  style={inputStyle}
-                />
-              </div>
+        <div className="mx-auto max-w-6xl px-6 lg:px-8 mt-16 grid grid-cols-1 lg:grid-cols-5 gap-12">
+          <div
+            ref={formColRef}
+            className="lg:col-span-3 p-8 sm:p-10"
+            style={{ backgroundColor: '#fff', border: `1px solid ${LINE}` }}
+          >
+            <h2
+              className="text-2xl mb-8"
+              style={{ color: PURPLE, fontFamily: "'Playfair Display', serif" }}
+            >
+              Send Us a Message
+            </h2>
 
-              <div>
-                <label htmlFor="email" className={labelClass} style={labelStyle}>
-                  Email
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="you@email.com (Optional)"
-                  className={fieldClass}
-                  style={inputStyle}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="phone" className={labelClass} style={labelStyle}>
-                  Phone
-                </label>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={form.phone}
-                  onChange={handleChange}
-                  placeholder="+91 12345 67890"
-                  className={fieldClass}
-                  style={inputStyle}
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="eventType" className={labelClass} style={labelStyle}>
-                  Event Type
-                </label>
-
-                {/* Multi-select event type dropdown — click to toggle each option */}
-                <div className="relative" ref={eventDropdownRef}>
-                  <button
-                    id="eventType"
-                    type="button"
-                    onClick={() => setEventDropdownOpen((open) => !open)}
-                    className={`${fieldClass} flex items-center justify-between text-left`}
-                    style={inputStyle}
-                    aria-haspopup="listbox"
-                    aria-expanded={eventDropdownOpen}
-                  >
-                    <span
-                      className={form.eventTypes.length === 0 ? 'opacity-50' : ''}
-                      style={{ color: PURPLE }}
-                    >
-                      {form.eventTypes.length === 0
-                        ? 'Select event type(s)'
-                        : form.eventTypes
-                            .map((t) => (t === OTHER_VALUE ? 'Other' : t))
-                            .join(', ')}
-                    </span>
-                    <FaChevronDown
-                      size={11}
-                      style={{
-                        color: PURPLE,
-                        opacity: 0.5,
-                        transform: eventDropdownOpen ? 'rotate(180deg)' : 'none',
-                        transition: 'transform 0.2s ease',
-                        flexShrink: 0,
-                        marginLeft: 8,
-                      }}
-                    />
-                  </button>
-
-                  {/* Hidden required input so native form validation still enforces a selection */}
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className={labelClass} style={labelStyle}>
+                    Full Name
+                  </label>
                   <input
-                    tabIndex={-1}
-                    aria-hidden="true"
+                    id="name"
+                    name="name"
+                    type="text"
                     required
-                    value={form.eventTypes.length > 0 ? 'ok' : ''}
-                    onChange={() => {}}
-                    className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
+                    value={form.name}
+                    onChange={handleChange}
+                    placeholder="Enter Your Name"
+                    className={fieldClass}
+                    style={inputStyle}
                   />
+                </div>
 
-                  {eventDropdownOpen && (
-                    <div
-                      role="listbox"
-                      aria-multiselectable="true"
-                      className="absolute z-10 mt-1 w-full bg-white border shadow-lg max-h-56 overflow-y-auto"
-                      style={{ borderColor: LINE }}
+                <div>
+                  <label htmlFor="email" className={labelClass} style={labelStyle}>
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder="you@email.com (Optional)"
+                    className={fieldClass}
+                    style={inputStyle}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className={labelClass} style={labelStyle}>
+                    Phone
+                  </label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={form.phone}
+                    onChange={handleChange}
+                    placeholder="+91 12345 67890"
+                    className={fieldClass}
+                    style={inputStyle}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="eventType" className={labelClass} style={labelStyle}>
+                    Event Type
+                  </label>
+
+                  {/* Multi-select event type dropdown — click to toggle each option */}
+                  <div className="relative" ref={eventDropdownRef}>
+                    <button
+                      id="eventType"
+                      type="button"
+                      onClick={() => setEventDropdownOpen((open) => !open)}
+                      className={`${fieldClass} flex items-center justify-between text-left`}
+                      style={inputStyle}
+                      aria-haspopup="listbox"
+                      aria-expanded={eventDropdownOpen}
                     >
-                      {EVENT_TYPES.map((type) => {
-                        const checked = form.eventTypes.includes(type)
-                        return (
-                          <label
-                            key={type}
-                            role="option"
-                            aria-selected={checked}
-                            className="flex items-center gap-2.5 px-3 py-2 text-sm cursor-pointer hover:bg-black/5 transition-colors"
-                            style={{ color: PURPLE, fontFamily: "'Poppins', sans-serif" }}
+                      <span
+                        className={form.eventTypes.length === 0 ? 'opacity-50' : ''}
+                        style={{ color: PURPLE }}
+                      >
+                        {form.eventTypes.length === 0
+                          ? 'Select event type(s)'
+                          : form.eventTypes
+                              .map((t) => (t === OTHER_VALUE ? 'Other' : t))
+                              .join(', ')}
+                      </span>
+                      <FaChevronDown
+                        size={11}
+                        aria-hidden="true"
+                        style={{
+                          color: PURPLE,
+                          opacity: 0.5,
+                          transform: eventDropdownOpen ? 'rotate(180deg)' : 'none',
+                          transition: 'transform 0.2s ease',
+                          flexShrink: 0,
+                          marginLeft: 8,
+                        }}
+                      />
+                    </button>
+
+                    {/* Hidden required input so native form validation still enforces a selection */}
+                    <input
+                      tabIndex={-1}
+                      aria-hidden="true"
+                      required
+                      value={form.eventTypes.length > 0 ? 'ok' : ''}
+                      onChange={() => {}}
+                      className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
+                    />
+
+                    {eventDropdownOpen && (
+                      <div
+                        role="listbox"
+                        aria-multiselectable="true"
+                        className="absolute z-10 mt-1 w-full bg-white border shadow-lg max-h-56 overflow-y-auto"
+                        style={{ borderColor: LINE }}
+                      >
+                        {EVENT_TYPES.map((type) => {
+                          const checked = form.eventTypes.includes(type)
+                          return (
+                            <label
+                              key={type}
+                              role="option"
+                              aria-selected={checked}
+                              className="flex items-center gap-2.5 px-3 py-2 text-sm cursor-pointer hover:bg-black/5 transition-colors"
+                              style={{ color: PURPLE, fontFamily: "'Poppins', sans-serif" }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => toggleEventType(type)}
+                                className="w-3.5 h-3.5"
+                                style={{ accentColor: GOLD }}
+                              />
+                              {type === OTHER_VALUE ? 'Other (please specify)' : type}
+                            </label>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Selected event types shown as removable chips */}
+                  {form.eventTypes.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {form.eventTypes.map((type) => (
+                        <span
+                          key={type}
+                          className="inline-flex items-center gap-1 rounded-full pl-2.5 pr-1.5 py-1 text-[11px]"
+                          style={{
+                            backgroundColor: 'rgba(200,169,106,0.15)',
+                            color: PURPLE,
+                            fontFamily: "'Poppins', sans-serif",
+                          }}
+                        >
+                          {type === OTHER_VALUE ? 'Other' : type}
+                          <button
+                            type="button"
+                            onClick={() => toggleEventType(type)}
+                            aria-label={`Remove ${type}`}
+                            className="w-3.5 h-3.5 flex items-center justify-center rounded-full hover:bg-black/10"
                           >
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              onChange={() => toggleEventType(type)}
-                              className="w-3.5 h-3.5"
-                              style={{ accentColor: GOLD }}
-                            />
-                            {type === OTHER_VALUE ? 'Other (please specify)' : type}
-                          </label>
-                        )
-                      })}
+                            <FaTimes size={8} aria-hidden="true" />
+                          </button>
+                        </span>
+                      ))}
                     </div>
+                  )}
+
+                  {showEventOther && (
+                    <input
+                      ref={otherFieldRef}
+                      key="eventTypeOther"
+                      id="eventTypeOther"
+                      name="eventTypeOther"
+                      type="text"
+                      value={form.eventTypeOther}
+                      onChange={handleChange}
+                      placeholder="Tell us what kind of event"
+                      className={`${fieldClass} mt-3`}
+                      style={inputStyle}
+                      required
+                    />
                   )}
                 </div>
 
-                {/* Selected event types shown as removable chips */}
-                {form.eventTypes.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {form.eventTypes.map((type) => (
-                      <span
-                        key={type}
-                        className="inline-flex items-center gap-1 rounded-full pl-2.5 pr-1.5 py-1 text-[11px]"
-                        style={{
-                          backgroundColor: 'rgba(200,169,106,0.15)',
-                          color: PURPLE,
-                          fontFamily: "'Poppins', sans-serif",
-                        }}
-                      >
-                        {type === OTHER_VALUE ? 'Other' : type}
-                        <button
-                          type="button"
-                          onClick={() => toggleEventType(type)}
-                          aria-label={`Remove ${type}`}
-                          className="w-3.5 h-3.5 flex items-center justify-center rounded-full hover:bg-black/10"
-                        >
-                          <FaTimes size={8} />
-                        </button>
-                      </span>
+                <div>
+                  <label htmlFor="preferredDate" className={labelClass} style={labelStyle}>
+                    Preferred Date
+                  </label>
+                  <input
+                    id="preferredDate"
+                    name="preferredDate"
+                    type="date"
+                    value={form.preferredDate}
+                    onChange={handleChange}
+                    className={fieldClass}
+                    style={inputStyle}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="guestCount" className={labelClass} style={labelStyle}>
+                    Expected Guests
+                  </label>
+                  <select
+                    id="guestCount"
+                    name="guestCount"
+                    value={form.guestCount}
+                    onChange={handleChange}
+                    className={fieldClass}
+                    style={inputStyle}
+                  >
+                    <option value="" disabled>
+                      Select guest count
+                    </option>
+                    {GUEST_COUNTS.map((count) => (
+                      <option key={count} value={count}>
+                        {count === OTHER_VALUE ? 'Other (please specify)' : count}
+                      </option>
                     ))}
-                  </div>
-                )}
+                  </select>
+                  {form.guestCount === OTHER_VALUE && (
+                    <input
+                      ref={otherFieldRef}
+                      key="guestCountOther"
+                      id="guestCountOther"
+                      name="guestCountOther"
+                      type="text"
+                      value={form.guestCountOther}
+                      onChange={handleChange}
+                      placeholder="Roughly how many guests"
+                      className={`${fieldClass} mt-3`}
+                      style={inputStyle}
+                    />
+                  )}
+                </div>
 
-                {showEventOther && (
-                  <input
-                    ref={otherFieldRef}
-                    key="eventTypeOther"
-                    id="eventTypeOther"
-                    name="eventTypeOther"
-                    type="text"
-                    value={form.eventTypeOther}
+                <div>
+                  <label htmlFor="budgetRange" className={labelClass} style={labelStyle}>
+                    Budget Range
+                  </label>
+                  <select
+                    id="budgetRange"
+                    name="budgetRange"
+                    value={form.budgetRange}
                     onChange={handleChange}
-                    placeholder="Tell us what kind of event"
-                    className={`${fieldClass} mt-3`}
+                    className={fieldClass}
                     style={inputStyle}
-                    required
+                  >
+                    <option value="" disabled>
+                      Select a budget range
+                    </option>
+                    {BUDGET_RANGES.map((range) => (
+                      <option key={range} value={range}>
+                        {range === OTHER_VALUE ? 'Other (please specify)' : range}
+                      </option>
+                    ))}
+                  </select>
+                  {form.budgetRange === OTHER_VALUE && (
+                    <input
+                      ref={otherFieldRef}
+                      key="budgetRangeOther"
+                      id="budgetRangeOther"
+                      name="budgetRangeOther"
+                      type="text"
+                      value={form.budgetRangeOther}
+                      onChange={handleChange}
+                      placeholder="Your approximate budget"
+                      className={`${fieldClass} mt-3`}
+                      style={inputStyle}
+                    />
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="venuePreference" className={labelClass} style={labelStyle}>
+                    Venue Preference
+                  </label>
+                  <input
+                    id="venuePreference"
+                    name="venuePreference"
+                    type="text"
+                    value={form.venuePreference}
+                    onChange={handleChange}
+                    placeholder="Banquet hall, resort, outdoor..."
+                    className={fieldClass}
+                    style={inputStyle}
                   />
-                )}
+                </div>
               </div>
 
               <div>
-                <label htmlFor="preferredDate" className={labelClass} style={labelStyle}>
-                  Preferred Date
+                <label htmlFor="message" className={labelClass} style={labelStyle}>
+                  Additional Details
                 </label>
-                <input
-                  id="preferredDate"
-                  name="preferredDate"
-                  type="date"
-                  value={form.preferredDate}
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={5}
+                  value={form.message}
                   onChange={handleChange}
-                  className={fieldClass}
+                  placeholder="Venue, guest count, vibe you're going for..."
+                  className="w-full border px-4 py-3 text-sm resize-none focus:outline-none focus:ring-1 transition-colors bg-white"
                   style={inputStyle}
                 />
               </div>
 
-              <div>
-                <label htmlFor="guestCount" className={labelClass} style={labelStyle}>
-                  Expected Guests
-                </label>
-                <select
-                  id="guestCount"
-                  name="guestCount"
-                  value={form.guestCount}
-                  onChange={handleChange}
-                  className={fieldClass}
-                  style={inputStyle}
-                >
-                  <option value="" disabled>
-                    Select guest count
-                  </option>
-                  {GUEST_COUNTS.map((count) => (
-                    <option key={count} value={count}>
-                      {count === OTHER_VALUE ? 'Other (please specify)' : count}
-                    </option>
-                  ))}
-                </select>
-                {form.guestCount === OTHER_VALUE && (
-                  <input
-                    ref={otherFieldRef}
-                    key="guestCountOther"
-                    id="guestCountOther"
-                    name="guestCountOther"
-                    type="text"
-                    value={form.guestCountOther}
-                    onChange={handleChange}
-                    placeholder="Roughly how many guests"
-                    className={`${fieldClass} mt-3`}
-                    style={inputStyle}
-                  />
-                )}
-              </div>
+              <button
+                ref={buttonRef}
+                type="submit"
+                disabled={status === 'sending'}
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-full px-8 py-3.5 text-sm font-semibold transition-transform duration-300 hover:scale-105 disabled:opacity-60 disabled:hover:scale-100"
+                style={{ backgroundColor: GOLD, color: PURPLE, fontFamily: "'Poppins', sans-serif" }}
+              >
+                {status === 'sending' ? 'Sending...' : 'Send Message'}
+              </button>
 
-              <div>
-                <label htmlFor="budgetRange" className={labelClass} style={labelStyle}>
-                  Budget Range
-                </label>
-                <select
-                  id="budgetRange"
-                  name="budgetRange"
-                  value={form.budgetRange}
-                  onChange={handleChange}
-                  className={fieldClass}
-                  style={inputStyle}
+              {status === 'success' && (
+                <p
+                  role="status"
+                  className="text-sm mt-4 flex items-center gap-2"
+                  style={{ color: '#3f7d4f', fontFamily: "'Poppins', sans-serif" }}
                 >
-                  <option value="" disabled>
-                    Select a budget range
-                  </option>
-                  {BUDGET_RANGES.map((range) => (
-                    <option key={range} value={range}>
-                      {range === OTHER_VALUE ? 'Other (please specify)' : range}
-                    </option>
-                  ))}
-                </select>
-                {form.budgetRange === OTHER_VALUE && (
-                  <input
-                    ref={otherFieldRef}
-                    key="budgetRangeOther"
-                    id="budgetRangeOther"
-                    name="budgetRangeOther"
-                    type="text"
-                    value={form.budgetRangeOther}
-                    onChange={handleChange}
-                    placeholder="Your approximate budget"
-                    className={`${fieldClass} mt-3`}
-                    style={inputStyle}
-                  />
-                )}
-              </div>
+                  <FaCheckCircle aria-hidden="true" /> Thank you — your message is on its way. We'll be in touch within 24 hours.
+                </p>
+              )}
+              {status === 'error' && (
+                <p
+                  role="alert"
+                  className="text-sm mt-4 flex items-center gap-2"
+                  style={{ color: '#a3403f', fontFamily: "'Poppins', sans-serif" }}
+                >
+                  <FaExclamationCircle aria-hidden="true" /> Something went wrong sending your message. Please try again, or email us directly.
+                </p>
+              )}
+            </form>
+          </div>
 
-              <div>
-                <label htmlFor="venuePreference" className={labelClass} style={labelStyle}>
-                  Venue Preference
-                </label>
-                <input
-                  id="venuePreference"
-                  name="venuePreference"
-                  type="text"
-                  value={form.venuePreference}
-                  onChange={handleChange}
-                  placeholder="Banquet hall, resort, outdoor..."
-                  className={fieldClass}
-                  style={inputStyle}
-                />
+          <div ref={infoColRef} className="lg:col-span-2 flex flex-col gap-8">
+            <div
+              className="p-8 sm:p-10 flex flex-col gap-6"
+              style={{ backgroundColor: PURPLE }}
+            >
+              <a
+                href="tel:+917021565980"
+                className="flex items-center gap-4 group"
+                style={{ fontFamily: "'Poppins', sans-serif" }}
+              >
+                <span
+                  className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0 transition-colors duration-300 group-hover:bg-opacity-20"
+                  style={{ border: `1px solid ${GOLD}66`, color: GOLD }}
+                >
+                  <FaPhone size={14} aria-hidden="true" />
+                </span>
+                <span style={{ color: IVORY }} className="text-sm opacity-90 group-hover:opacity-100">
+                  +91 7021565980
+                </span>
+              </a>
+
+              <a
+                href="mailto:hello@crewaura.com"
+                className="flex items-center gap-4 group"
+                style={{ fontFamily: "'Poppins', sans-serif" }}
+              >
+                <span
+                  className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0"
+                  style={{ border: `1px solid ${GOLD}66`, color: GOLD }}
+                >
+                  <FaEnvelope size={14} aria-hidden="true" />
+                </span>
+                <span style={{ color: IVORY }} className="text-sm opacity-90 group-hover:opacity-100">
+                  hello@crewaura.com
+                </span>
+              </a>
+
+              <div className="flex items-center gap-4">
+                <span
+                  className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0"
+                  style={{ border: `1px solid ${GOLD}66`, color: GOLD }}
+                >
+                  <FaMapMarkerAlt size={14} aria-hidden="true" />
+                </span>
+                <span
+                  style={{ color: IVORY, fontFamily: "'Poppins', sans-serif" }}
+                  className="text-sm opacity-90"
+                >
+                  Navi Mumbai, Maharashtra, India
+                </span>
               </div>
             </div>
 
-            <div>
-              <label htmlFor="message" className={labelClass} style={labelStyle}>
-                Additional Details
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={5}
-                value={form.message}
-                onChange={handleChange}
-                placeholder="Venue, guest count, vibe you're going for..."
-                className="w-full border px-4 py-3 text-sm resize-none focus:outline-none focus:ring-1 transition-colors bg-white"
-                style={inputStyle}
+            {/*
+            <div
+              className="flex-1 min-h-[280px] overflow-hidden"
+              style={{ border: `1px solid ${LINE}` }}
+            >
+              <iframe
+                title="Crew Aura studio location map"
+                src={MAPS_EMBED_SRC}
+                width="100%"
+                height="100%"
+                style={{ border: 0, minHeight: 280, display: 'block' }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
-
-            <button
-              ref={buttonRef}
-              type="submit"
-              disabled={status === 'sending'}
-              className="w-full sm:w-auto inline-flex items-center justify-center rounded-full px-8 py-3.5 text-sm font-semibold transition-transform duration-300 hover:scale-105 disabled:opacity-60 disabled:hover:scale-100"
-              style={{ backgroundColor: GOLD, color: PURPLE, fontFamily: "'Poppins', sans-serif" }}
-            >
-              {status === 'sending' ? 'Sending...' : 'Send Message'}
-            </button>
-
-            {status === 'success' && (
-              <p className="text-sm mt-4 flex items-center gap-2" style={{ color: '#3f7d4f', fontFamily: "'Poppins', sans-serif" }}>
-                <FaCheckCircle /> Thank you — your message is on its way. We'll be in touch within 24 hours.
-              </p>
-            )}
-            {status === 'error' && (
-              <p className="text-sm mt-4 flex items-center gap-2" style={{ color: '#a3403f', fontFamily: "'Poppins', sans-serif" }}>
-                <FaExclamationCircle /> Something went wrong sending your message. Please try again, or email us directly.
-              </p>
-            )}
-          </form>
-        </div>
-
-        <div ref={infoColRef} className="lg:col-span-2 flex flex-col gap-8">
-          <div
-            className="p-8 sm:p-10 flex flex-col gap-6"
-            style={{ backgroundColor: PURPLE }}
-          >
-            <a
-              href="tel:+917021565980"
-              className="flex items-center gap-4 group"
-              style={{ fontFamily: "'Poppins', sans-serif" }}
-            >
-              <span
-                className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0 transition-colors duration-300 group-hover:bg-opacity-20"
-                style={{ border: `1px solid ${GOLD}66`, color: GOLD }}
-              >
-                <FaPhone size={14} />
-              </span>
-              <span style={{ color: IVORY }} className="text-sm opacity-90 group-hover:opacity-100">
-                +91 7021565980
-              </span>
-            </a>
-
-            <a
-              href="mailto:Hello@crewaura.com"
-              className="flex items-center gap-4 group"
-              style={{ fontFamily: "'Poppins', sans-serif" }}
-            >
-              <span
-                className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0"
-                style={{ border: `1px solid ${GOLD}66`, color: GOLD }}
-              >
-                <FaEnvelope size={14} />
-              </span>
-              <span style={{ color: IVORY }} className="text-sm opacity-90 group-hover:opacity-100">
-                Hello@crewaura.com
-              </span>
-            </a>
-
-            <div className="flex items-center gap-4">
-              <span
-                className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0"
-                style={{ border: `1px solid ${GOLD}66`, color: GOLD }}
-              >
-                <FaMapMarkerAlt size={14} />
-              </span>
-              <span
-                style={{ color: IVORY, fontFamily: "'Poppins', sans-serif" }}
-                className="text-sm opacity-90"
-              >
-                Navi Mumbai, Maharashtra, India
-              </span>
-            </div>
+            */}
           </div>
-
-          {/*
-          <div
-            className="flex-1 min-h-[280px] overflow-hidden"
-            style={{ border: `1px solid ${LINE}` }}
-          >
-            <iframe
-              title="Studio location map"
-              src={MAPS_EMBED_SRC}
-              width="100%"
-              height="100%"
-              style={{ border: 0, minHeight: 280, display: 'block' }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
-          */}
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   )
 }
 

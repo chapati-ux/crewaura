@@ -14,7 +14,7 @@ const LINE = 'rgba(45,28,62,0.15)'
 
 const PETAL_COUNT = 10
 
-const AboutUs = () => {
+const AboutUs = ({ headingAs: Heading = 'h2' }) => {
   const containerRef = useRef(null)
   const leftColRef = useRef(null)
   const headingRef = useRef(null)
@@ -39,20 +39,21 @@ const AboutUs = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // 1. Line expansion
-      gsap.fromTo(decorativeLineRef.current, 
+      gsap.fromTo(
+        decorativeLineRef.current,
         { scaleX: 0 },
-        { 
-          scaleX: 1, 
-          duration: 1.2, 
+        {
+          scaleX: 1,
+          duration: 1.2,
           ease: 'power3.inOut',
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 80%',
-          }
+          },
         }
       )
 
-      // 2. Left column typography reveals (Clips and floats)
+      // 2. Left column typography reveals (clips and floats)
       const headingSplit = headingRef.current.querySelectorAll('.word-trigger')
       gsap.from(headingSplit, {
         yPercent: 100,
@@ -62,7 +63,7 @@ const AboutUs = () => {
         scrollTrigger: {
           trigger: headingRef.current,
           start: 'top 85%',
-        }
+        },
       })
 
       gsap.from(paraRef.current, {
@@ -73,10 +74,10 @@ const AboutUs = () => {
         scrollTrigger: {
           trigger: paraRef.current,
           start: 'top 85%',
-        }
+        },
       })
 
-      // 3. Wedding rings — draw themselves in, then settle with a gentle interlock float
+      // 3. Wedding rings: draw themselves in, then settle with a gentle float
       if (ringOneRef.current && ringTwoRef.current) {
         const ringLen1 = ringOneRef.current.getTotalLength()
         const ringLen2 = ringTwoRef.current.getTotalLength()
@@ -89,24 +90,28 @@ const AboutUs = () => {
           scrollTrigger: {
             trigger: ringVisualRef.current,
             start: 'top 80%',
-          }
+          },
         })
 
         ringTl
           .to(ringVisualRef.current, { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' })
           .to(ringOneRef.current, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut' }, '-=0.2')
           .to(ringTwoRef.current, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut' }, '-=1.1')
-          .to(ringVisualRef.current, {
-            y: -8,
-            duration: 2.4,
-            ease: 'sine.inOut',
-            repeat: -1,
-            yoyo: true,
-          }, '-=0.4')
+          .to(
+            ringVisualRef.current,
+            {
+              y: -8,
+              duration: 2.4,
+              ease: 'sine.inOut',
+              repeat: -1,
+              yoyo: true,
+            },
+            '-=0.4'
+          )
       }
 
-      // 4. Floating petals — gentle upward drift with fade, looping, staggered
-      petalRefs.current.forEach((petal, i) => {
+      // 4. Floating petals: gentle upward drift with fade, looping, staggered
+      petalRefs.current.forEach((petal) => {
         if (!petal) return
         const startX = gsap.utils.random(-20, 20)
         const drift = gsap.utils.random(-40, 40)
@@ -141,65 +146,90 @@ const AboutUs = () => {
   }, [])
 
   return (
-    <section 
-      ref={containerRef} 
-      className="relative overflow-hidden py-24 sm:py-36" 
+    <section
+      ref={containerRef}
+      className="relative overflow-hidden py-24 sm:py-36"
       style={{ backgroundColor: IVORY }}
       aria-labelledby="about-heading"
     >
-      {/* Structural Minimal Grid Background Accent Line */}
-      <div ref={decorativeLineRef} className="absolute top-0 left-8 right-8 h-px origin-left" style={{ backgroundColor: LINE }} />
-      
+      {/* Structural minimal grid background accent line */}
+      <div
+        ref={decorativeLineRef}
+        className="absolute top-0 left-8 right-8 h-px origin-left"
+        style={{ backgroundColor: LINE }}
+      />
+
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 items-center">
-          
-          {/* LEFT COLUMN: Narrative & Statement Branding */}
+          {/* LEFT COLUMN: Narrative & statement branding */}
           <div ref={leftColRef} className="lg:col-span-7 flex flex-col justify-between h-full group">
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <GiFlowerEmblem size={20} style={{ color: GOLD }} className="animate-spin-slow" role="img" aria-label="Decorative Floral Emblem" />
-                <span style={{ fontFamily: "'Space Grotesk', sans-serif", color: GOLD }} className="text-xs tracking-[0.25em] uppercase font-medium">
+                <GiFlowerEmblem
+                  size={20}
+                  style={{ color: GOLD }}
+                  className="animate-spin-slow"
+                  role="img"
+                  aria-label="Decorative Floral Emblem"
+                />
+                <span
+                  style={{ fontFamily: "'Space Grotesk', sans-serif", color: GOLD }}
+                  className="text-xs tracking-[0.25em] uppercase font-medium"
+                >
                   The Masterminds
                 </span>
               </div>
 
-              <h1 
+              <Heading
                 id="about-heading"
                 ref={headingRef}
-                style={{ fontFamily: "'Unbounded', sans-serif", color: PURPLE }} 
+                style={{ fontFamily: "'Unbounded', sans-serif", color: PURPLE }}
                 className="text-4xl sm:text-6xl font-light tracking-tight leading-[1.1] mb-8"
               >
                 <span className="block overflow-hidden pb-1">
                   <span className="word-trigger inline-block">Crafting</span>
                 </span>
                 <span className="block overflow-hidden pb-1">
-                  <span className="word-trigger inline-block font-normal italic" style={{ fontFamily: "'Cormorant Garamond', serif", color: GOLD }}>Experiences,</span>
+                  <span
+                    className="word-trigger inline-block font-normal italic"
+                    style={{ fontFamily: "'Cormorant Garamond', serif", color: GOLD }}
+                  >
+                    Experiences,
+                  </span>
                 </span>
                 <span className="block overflow-hidden pb-1">
                   <span className="word-trigger inline-block">Not Just Events.</span>
                 </span>
-              </h1>
+              </Heading>
 
-              <div 
+              <div
                 ref={paraRef}
                 style={{ fontFamily: "'Space Grotesk', sans-serif", color: TEXT }}
                 className="text-base sm:text-lg leading-relaxed max-w-xl space-y-6 opacity-90"
               >
                 <p>
-                  Welcome to <strong style={{ color: PURPLE, fontWeight: 600 }}>Crew Aura</strong> — your premier narrative destination for unforgettable global celebrations. 
-                  founded by Sahil Manjulkar , we meticulously blend artistic visual poetry with geometric operational precision. 
+                  Welcome to <strong style={{ color: PURPLE, fontWeight: 600 }}>Crew Aura</strong>,
+                  a destination wedding planner in Navi Mumbai. Founded by Sahil Manjulkar,
+                  we blend artistic design with precise planning to create weddings across India and abroad.
                 </p>
                 <p>
-                  From quiet beachside vows to massive ballroom corporate launches, we balance absolute elegance, infectious energy, and pristine execution.
+                  From quiet beachside vows to grand ballroom celebrations, we balance
+                  elegance, energy, and flawless execution.
                 </p>
               </div>
             </div>
 
-            <address className="mt-12 lg:mt-24 inline-flex items-center gap-4 self-start border-b pb-2 not-italic" style={{ borderColor: LINE }}>
+            <address
+              className="mt-12 lg:mt-24 inline-flex items-center gap-4 self-start border-b pb-2 not-italic"
+              style={{ borderColor: LINE }}
+            >
               <div className="p-2 rounded-full bg-stone-950/5">
                 <FiMapPin size={16} style={{ color: GOLD }} role="img" aria-label="Location Marker" />
               </div>
-              <p style={{ fontFamily: "'Space Grotesk', sans-serif", color: PURPLE }} className="text-xs tracking-wider uppercase font-medium">
+              <p
+                style={{ fontFamily: "'Space Grotesk', sans-serif", color: PURPLE }}
+                className="text-xs tracking-wider uppercase font-medium"
+              >
                 Navi Mumbai <span className="mx-1 text-stone-400" aria-hidden="true">•</span> Pan-India Destinations
               </p>
             </address>
@@ -207,7 +237,6 @@ const AboutUs = () => {
 
           {/* RIGHT COLUMN: Animated wedding rings + floating petals */}
           <div className="lg:col-span-5 relative flex items-center justify-center min-h-[380px]">
-            
             {/* Floating petals layer */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
               {Array.from({ length: PETAL_COUNT }).map((_, i) => (
@@ -235,23 +264,10 @@ const AboutUs = () => {
                 className="w-full h-full"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
               >
-                <circle
-                  ref={ringOneRef}
-                  cx="120"
-                  cy="150"
-                  r="70"
-                  stroke={GOLD}
-                  strokeWidth="3"
-                />
-                <circle
-                  ref={ringTwoRef}
-                  cx="185"
-                  cy="150"
-                  r="70"
-                  stroke={PURPLE}
-                  strokeWidth="3"
-                />
+                <circle ref={ringOneRef} cx="120" cy="150" r="70" stroke={GOLD} strokeWidth="3" />
+                <circle ref={ringTwoRef} cx="185" cy="150" r="70" stroke={PURPLE} strokeWidth="3" />
               </svg>
 
               {/* Small accent label under the rings */}
@@ -265,7 +281,6 @@ const AboutUs = () => {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>

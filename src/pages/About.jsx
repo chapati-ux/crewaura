@@ -1,8 +1,22 @@
 import React, { useLayoutEffect, useRef } from "react";
 import { FaRing } from "react-icons/fa";
 import gsap from "gsap";
+import SEO from "../components/SEO";
 
 const PARTICLE_COUNT = 8;
+
+const H1_WORDS = [
+  "About",
+  "Crew",
+  "Aura",
+  "|",
+  "Destination",
+  "Wedding",
+  "Planners",
+  "in",
+  "Navi",
+  "Mumbai",
+];
 
 const About = () => {
   const containerRef = useRef(null);
@@ -15,7 +29,6 @@ const About = () => {
   const particleRefs = useRef([]);
 
   useLayoutEffect(() => {
-    // Create a context to safely manage GSAP scopes in React
     let ctx = gsap.context(() => {
       // 1. Gentle fade and scale up for the ring icon block
       gsap.fromTo(
@@ -46,7 +59,7 @@ const About = () => {
         },
       );
 
-      // 1b. Ring icon: drop in with a little rotation, then float + slowly spin forever
+      // 1b. Ring icon: drop in, then float + slowly spin forever
       gsap.fromTo(
         ringIconRef.current,
         { opacity: 0, y: -20, rotate: -25, scale: 0.6 },
@@ -58,7 +71,6 @@ const About = () => {
           duration: 1,
           ease: "back.out(1.7)",
           onComplete: () => {
-            // Continuous gentle float
             gsap.to(ringIconRef.current, {
               y: -6,
               duration: 2.2,
@@ -66,7 +78,6 @@ const About = () => {
               repeat: -1,
               yoyo: true,
             });
-            // Continuous slow spin
             gsap.to(ringIconRef.current, {
               rotate: 360,
               duration: 12,
@@ -77,7 +88,7 @@ const About = () => {
         },
       );
 
-      // 1c. Divider line expands outward after the logo settles
+      // 1c. Divider line expands outward
       gsap.fromTo(
         dividerRef.current,
         { scaleX: 0, opacity: 0 },
@@ -90,7 +101,7 @@ const About = () => {
         },
       );
 
-      // 2. Smooth staggered upward fade for the text elements
+      // 2. Staggered upward fade for the text elements
       gsap.fromTo(
         textRef.current.children,
         { opacity: 0, y: 30 },
@@ -104,7 +115,7 @@ const About = () => {
         },
       );
 
-      // 2b. Word-by-word reveal for the heading (overrides the plain fade above)
+      // 2b. Word-by-word reveal for the heading
       const words = headingRef.current.querySelectorAll(".word-reveal");
       gsap.fromTo(
         words,
@@ -120,8 +131,8 @@ const About = () => {
         },
       );
 
-      // 3. Floating background particles (sparkles / petals)
-      particleRefs.current.forEach((el, i) => {
+      // 3. Floating background particles
+      particleRefs.current.forEach((el) => {
         if (!el) return;
         const startX = gsap.utils.random(-30, 30);
         const drift = gsap.utils.random(-50, 50);
@@ -148,87 +159,104 @@ const About = () => {
       });
     }, containerRef);
 
-    return () => ctx.revert(); // Clean up animations on unmount
+    return () => ctx.revert();
   }, []);
 
   return (
-    <main
-      ref={containerRef}
-      className="relative min-h-screen overflow-hidden pt-28 pb-24 transition-colors duration-500"
-      style={{ backgroundColor: "#FFFFFF" }} // Clean White Background
-    >
-      {/* Floating background particles layer */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
-          <div
-            key={i}
-            ref={(el) => (particleRefs.current[i] = el)}
-            className="absolute rounded-full"
-            style={{
-              left: `${10 + ((i * 89) % 85)}%`,
-              bottom: "5%",
-              width: i % 3 === 0 ? 8 : 5,
-              height: i % 3 === 0 ? 11 : 7,
-              backgroundColor: i % 2 === 0 ? "#C8A96A" : "#1A1A1A",
-              opacity: 0.12,
-              borderRadius: "60% 40% 60% 40%",
-            }}
-          />
-        ))}
-      </div>
+    <>
+      <SEO
+        title="About Us"
+        description="Meet Crew Aura, a destination wedding planning team in Navi Mumbai. We design and manage beachside vows to grand ballroom weddings across India."
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          name: "About Crew Aura",
+          url: "https://crewaura.com/about",
+          mainEntity: {
+            "@type": "Organization",
+            name: "Crew Aura",
+            url: "https://crewaura.com",
+            founder: { "@type": "Person", name: "Sahil Manjulkar" },
+            areaServed: ["Navi Mumbai", "Mumbai", "India"],
+          },
+        }}
+      />
 
-      <div className="relative mx-auto max-w-4xl px-6 text-center lg:px-8">
-        {/* Animated Icon Wrapper */}
-        <div ref={ringRef} className="opacity-0">
-          {/* Soft pulsing glow + floating / rotating ring icon */}
-          <div className="relative flex justify-center mb-3">
+      <main
+        ref={containerRef}
+        className="relative min-h-screen overflow-hidden pt-28 pb-24 transition-colors duration-500"
+        style={{ backgroundColor: "#FFFFFF" }}
+      >
+        {/* Floating background particles layer */}
+        <div
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+          aria-hidden="true"
+        >
+          {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
             <div
-              ref={glowRef}
-              className="absolute h-14 w-14 rounded-full blur-xl opacity-0"
-              style={{ backgroundColor: "#C8A96A" }}
-              aria-hidden="true"
+              key={i}
+              ref={(el) => (particleRefs.current[i] = el)}
+              className="absolute rounded-full"
+              style={{
+                left: `${10 + ((i * 89) % 85)}%`,
+                bottom: "5%",
+                width: i % 3 === 0 ? 8 : 5,
+                height: i % 3 === 0 ? 11 : 7,
+                backgroundColor: i % 2 === 0 ? "#C8A96A" : "#1A1A1A",
+                opacity: 0.12,
+                borderRadius: "60% 40% 60% 40%",
+              }}
             />
-            <div ref={ringIconRef} className="relative opacity-0">
-              <FaRing size={22} style={{ color: "#C8A96A" }} aria-hidden="true" />
-            </div>
-          </div>
-
-          <span
-            style={{ fontFamily: "'Cinzel Decorative', serif" }}
-            className="flex justify-center text-xl tracking-tight sm:text-2xl mx-auto mb-4"
-          >
-            CREWAURA
-          </span>
-
-          {/* Expanding divider line */}
-          <div
-            ref={dividerRef}
-            className="mx-auto h-px w-16 origin-center mb-6"
-            style={{ backgroundColor: "#C8A96A", opacity: 0 }}
-          />
+          ))}
         </div>
 
-        {/* Animated Text Block & Semantic SEO Hierarchy */}
-        <div ref={textRef} style={{ perspective: 600 }}>
-          {/* Subtitle / Context tag */}
-          <span
-            className="block text-xs font-semibold uppercase tracking-[0.3em] opacity-0"
-            style={{ color: "#C8A96A", fontFamily: "'Poppins', sans-serif" }}
-          >
-            Our Story
-          </span>
+        <div className="relative mx-auto max-w-4xl px-6 text-center lg:px-8">
+          {/* Animated Icon Wrapper */}
+          <div ref={ringRef} className="opacity-0">
+            <div className="relative flex justify-center mb-3">
+              <div
+                ref={glowRef}
+                className="absolute h-14 w-14 rounded-full blur-xl opacity-0"
+                style={{ backgroundColor: "#C8A96A" }}
+                aria-hidden="true"
+              />
+              <div ref={ringIconRef} className="relative opacity-0">
+                <FaRing size={22} style={{ color: "#C8A96A" }} aria-hidden="true" />
+              </div>
+            </div>
 
-          {/* Core SEO Target: Critical H1 heading indicating exact identity and location focus */}
-          <h1
-            ref={headingRef}
-            className="mt-4 text-4xl font-bold leading-tight sm:text-5xl"
-            style={{
-              color: "#1A1A1A",
-              fontFamily: "'Playfair Display', serif",
-            }} // Dark elegant contrast text
-          >
-            {["About", "Crew", "Aura", "|", "Luxury", "Wedding", "Planners"].map(
-              (word, i) => (
+            <span
+              style={{ fontFamily: "'Cinzel Decorative', serif" }}
+              className="flex justify-center text-xl tracking-tight sm:text-2xl mx-auto mb-4"
+            >
+              CREW AURA
+            </span>
+
+            <div
+              ref={dividerRef}
+              className="mx-auto h-px w-16 origin-center mb-6"
+              style={{ backgroundColor: "#C8A96A", opacity: 0 }}
+            />
+          </div>
+
+          {/* Text block */}
+          <div ref={textRef} style={{ perspective: 600 }}>
+            <span
+              className="block text-xs font-semibold uppercase tracking-[0.3em] opacity-0"
+              style={{ color: "#C8A96A", fontFamily: "'Poppins', sans-serif" }}
+            >
+              Our Story
+            </span>
+
+            <h1
+              ref={headingRef}
+              className="mt-4 text-4xl font-bold leading-tight sm:text-5xl"
+              style={{
+                color: "#1A1A1A",
+                fontFamily: "'Playfair Display', serif",
+              }}
+            >
+              {H1_WORDS.map((word, i) => (
                 <span
                   key={i}
                   className="word-reveal inline-block mr-2 sm:mr-3 opacity-0"
@@ -236,24 +264,22 @@ const About = () => {
                 >
                   {word}
                 </span>
-              ),
-            )}
-          </h1>
+              ))}
+            </h1>
 
-          {/* Descriptive body containing conversational organic keywords */}
-          <p
-            className="mx-auto mt-6 max-w-2xl text-base leading-relaxed sm:text-lg opacity-0"
-            style={{ color: "#4A4A4A", fontFamily: "'Poppins', sans-serif" }} // Readable softer dark gray text
-          >
-            For over a decade, Crew Aura has turned unique love stories into
-            unforgettable destination celebrations. From quiet beachside vows to
-            grand ballroom affairs across Navi Mumbai and pan-India
-            destinations, our team manages meticulous operational execution so
-            you can simply remain fully present in your own magical moment.
-          </p>
+            <p
+              className="mx-auto mt-6 max-w-2xl text-base leading-relaxed sm:text-lg opacity-0"
+              style={{ color: "#4A4A4A", fontFamily: "'Poppins', sans-serif" }}
+            >
+              Crew Aura turns unique love stories into unforgettable destination
+              celebrations. From quiet beachside vows to grand ballroom affairs,
+              our Navi Mumbai team handles every detail across India so you can
+              stay fully present in your own magical moment.
+            </p>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 };
 
